@@ -9,6 +9,7 @@ Claude Code と Codex の共通ルールです。両方のAIがこのファイ�
 - 毎日1つ作って公開する。このリポジトリはその記録と作品の置き場
 - `index.html` が記録ページ。GitHub Pages で `main` ブランチの直下から公開している
   - 公開URL: https://7h7jycvgzv-cyber.github.io/100000000000000-/
+- 長期の計画は `ROADMAP.md`。提案はこの計画に沿って行う。計画を変えるときは「変更の記録」に追記する
 
 ## オーナーについて
 
