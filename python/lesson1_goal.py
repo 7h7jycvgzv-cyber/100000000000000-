@@ -14,7 +14,7 @@ print(goal / money)         # 何倍にすれば届くか
 # 毎年2倍になったら、何年で100兆円に届くか
 year = 0
 while money < goal:
-    money = money * 1.5
+    money = money * 1.3
     year = year + 1
 
 print(year, "年で到達")
