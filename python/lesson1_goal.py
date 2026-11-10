@@ -17,5 +17,6 @@ year = 0
 while money < goal:
     money = money * rate
     year = year + 1
+    print(year, "年目:", money, "円")
 
 print(year, "年で到達")
