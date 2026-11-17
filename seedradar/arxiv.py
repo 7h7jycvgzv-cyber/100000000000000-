@@ -14,7 +14,7 @@ API_URL = "https://export.arxiv.org/api/query"
 USER_AGENT = "seedradar/0.1"
 # arXiv asks API clients to wait 3 seconds between requests.
 REQUEST_INTERVAL_SEC = 3.0
-TIMEOUT_SEC = 30
+TIMEOUT_SEC = 60
 MAX_ATTEMPTS = 3
 MAX_RESULTS_LIMIT = 200
 
@@ -30,16 +30,28 @@ class Field:
     label_en: str
     label_ja: str
     categories: tuple[str, ...]
+    # When set, a paper must also mention at least one of these in its abstract.
+    keywords: tuple[str, ...] = ()
 
 
 FIELDS: dict[str, Field] = {
     f.key: f
     for f in (
+        # Space is matched by keyword inside engineering-leaning categories, so that
+        # satellite and spacecraft technology comes first and basic astronomy drops out.
         Field(
             "space",
-            "Space & Astrophysics",
+            "Space Technology",
             "宇宙開発",
-            ("astro-ph.EP", "astro-ph.IM", "physics.space-ph"),
+            (
+                "astro-ph.IM", "physics.space-ph", "eess.SP", "eess.SY",
+                "eess.IV", "cs.RO", "cs.NI", "cs.CV",
+            ),
+            (
+                "spacecraft", "cubesat", "satellite constellation", "earth observation",
+                "remote sensing", "on-orbit", "in-orbit", "space debris", "low earth orbit",
+                "inter-satellite", "satellite communication", "satellite imagery",
+            ),
         ),
         Field("quantum", "Quantum Computing", "量子計算", ("quant-ph",)),
         Field("ai", "Artificial Intelligence", "AI", ("cs.AI", "cs.LG", "cs.CL")),
@@ -70,14 +82,28 @@ class ArxivError(RuntimeError):
     """Raised when the arXiv API cannot be reached or returns bad data."""
 
 
-def build_query_url(categories: tuple[str, ...] | list[str], max_results: int) -> str:
+def build_search_query(categories: tuple[str, ...] | list[str], keywords: tuple[str, ...] | list[str] = ()) -> str:
     if not categories:
         raise ValueError("categories must not be empty")
+    query = " OR ".join(f"cat:{c}" for c in categories)
+    if not keywords:
+        return query
+    for keyword in keywords:
+        if '"' in keyword:
+            raise ValueError(f"keyword must not contain a double quote: {keyword}")
+    terms = " OR ".join(f'abs:"{k}"' if " " in k else f"abs:{k}" for k in keywords)
+    return f"({query}) AND ({terms})"
+
+
+def build_query_url(
+    categories: tuple[str, ...] | list[str],
+    max_results: int,
+    keywords: tuple[str, ...] | list[str] = (),
+) -> str:
     if not 1 <= max_results <= MAX_RESULTS_LIMIT:
         raise ValueError(f"max_results must be between 1 and {MAX_RESULTS_LIMIT}")
-    query = " OR ".join(f"cat:{c}" for c in categories)
     params = {
-        "search_query": query,
+        "search_query": build_search_query(categories, keywords),
         "sortBy": "submittedDate",
         "sortOrder": "descending",
         "start": 0,
@@ -166,7 +192,8 @@ def http_get(url: str) -> bytes:
 def fetch_field(field_key: str, max_results: int = 10, get=http_get) -> list[Paper]:
     if field_key not in FIELDS:
         raise ValueError(f"unknown field: {field_key} (choose from {', '.join(FIELDS)})")
-    url = build_query_url(FIELDS[field_key].categories, max_results)
+    spec = FIELDS[field_key]
+    url = build_query_url(spec.categories, max_results, spec.keywords)
     return parse_feed(get(url))
 
 

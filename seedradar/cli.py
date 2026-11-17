@@ -35,6 +35,7 @@ def build_payload(papers, field_keys: list[str]) -> dict:
                 "label_en": FIELDS[key].label_en,
                 "label_ja": FIELDS[key].label_ja,
                 "categories": list(FIELDS[key].categories),
+                "keywords": list(FIELDS[key].keywords),
             }
             for key in field_keys
         },
@@ -94,6 +95,17 @@ def cmd_merge(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_remove(args: argparse.Namespace) -> int:
+    try:
+        result = seeds.remove(_read_json(args.seeds), args.arxiv_ids)
+    except ValueError as e:
+        print(f"error: {e}", file=sys.stderr)
+        return 1
+    _write_json(args.seeds, result)
+    print(f"removed {len(args.arxiv_ids)} -> {args.seeds}: {result['count']} papers left")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="seedradar", description="arXiv papers -> business seeds")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -120,6 +132,11 @@ def main(argv: list[str] | None = None) -> int:
     merge.add_argument("--papers", default=DEFAULT_PAPERS)
     merge.add_argument("--seeds", default=DEFAULT_SEEDS)
     merge.set_defaults(func=cmd_merge)
+
+    remove = sub.add_parser("remove", help="remove papers from the public seeds.json")
+    remove.add_argument("arxiv_ids", nargs="+")
+    remove.add_argument("--seeds", default=DEFAULT_SEEDS)
+    remove.set_defaults(func=cmd_remove)
 
     args = parser.parse_args(argv)
     return args.func(args)

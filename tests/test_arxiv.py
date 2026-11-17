@@ -37,6 +37,36 @@ class BuildQueryUrlTest(unittest.TestCase):
             arxiv.build_query_url(("cs.AI",), arxiv.MAX_RESULTS_LIMIT + 1)
 
 
+class BuildSearchQueryTest(unittest.TestCase):
+    def test_categories_only(self):
+        self.assertEqual(arxiv.build_search_query(("quant-ph",)), "cat:quant-ph")
+
+    def test_keywords_are_required_in_the_abstract(self):
+        query = arxiv.build_search_query(("cs.RO", "eess.SP"), ("spacecraft", "remote sensing"))
+        self.assertEqual(query, '(cat:cs.RO OR cat:eess.SP) AND (abs:spacecraft OR abs:"remote sensing")')
+
+    def test_keyword_with_quote_is_rejected(self):
+        with self.assertRaises(ValueError):
+            arxiv.build_search_query(("cs.RO",), ('bad"word',))
+
+    def test_space_field_is_keyword_filtered(self):
+        space = arxiv.FIELDS["space"]
+        self.assertTrue(space.keywords)
+        self.assertNotIn("astro-ph.EP", space.categories)
+        url = arxiv.build_query_url(space.categories, 5, space.keywords)
+        query = urllib.parse.parse_qs(urllib.parse.urlparse(url).query)["search_query"][0]
+        self.assertIn(") AND (", query)
+        self.assertIn("abs:spacecraft", query)
+
+    def test_fetch_field_sends_keywords(self):
+        urls = []
+        arxiv.fetch_field("space", 5, get=lambda url: urls.append(url) or FIXTURE)
+        self.assertIn("abs%3Aspacecraft", urls[0])
+        urls.clear()
+        arxiv.fetch_field("quantum", 5, get=lambda url: urls.append(url) or FIXTURE)
+        self.assertNotIn("abs%3A", urls[0])
+
+
 class ParseFeedTest(unittest.TestCase):
     def test_parses_entries(self):
         papers = arxiv.parse_feed(FIXTURE)

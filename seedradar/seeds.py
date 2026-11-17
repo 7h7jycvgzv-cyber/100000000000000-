@@ -102,6 +102,17 @@ def pending_papers(papers_doc: dict, seeds_doc: dict | None) -> list[dict]:
     return [p for p in papers_doc.get("papers", []) if (p["arxiv_id"], p["version"]) not in done]
 
 
+def remove(seeds_doc: dict, arxiv_ids: list[str]) -> dict:
+    """Drop papers from seeds.json. Every id must exist, so a typo cannot pass silently."""
+    existing = {p["arxiv_id"] for p in seeds_doc.get("papers", [])}
+    missing = [i for i in arxiv_ids if i not in existing]
+    if missing:
+        raise ValueError(f"not in seeds.json: {', '.join(missing)}")
+    drop = set(arxiv_ids)
+    papers = [p for p in seeds_doc["papers"] if p["arxiv_id"] not in drop]
+    return _document(papers)
+
+
 def merge(papers_doc: dict, analysis_doc: dict, seeds_doc: dict | None = None) -> dict:
     """Merge an analysis into seeds.json. A newer analysis of the same paper replaces the old one."""
     errors = validate_analysis(analysis_doc)
@@ -132,7 +143,11 @@ def merge(papers_doc: dict, analysis_doc: dict, seeds_doc: dict | None = None) -
         )
         merged[entry["arxiv_id"]] = public
 
-    papers = sorted(merged.values(), key=lambda p: (p["published"], p["arxiv_id"]), reverse=True)
+    return _document(list(merged.values()))
+
+
+def _document(papers: list[dict]) -> dict:
+    papers = sorted(papers, key=lambda p: (p["published"], p["arxiv_id"]), reverse=True)
     return {
         "updated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "source": "arXiv API",
