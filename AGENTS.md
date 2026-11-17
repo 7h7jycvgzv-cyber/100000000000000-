@@ -15,15 +15,21 @@ Claude Code と Codex の共通ルールです。両方のAIがこのファイ�
 
 - 「100兆円への記録」。道すじは AI → 宇宙 → 量子
 - 長期の計画は `ROADMAP.md`。計画を変えるときは「変更の記録」に追記する
-- `index.html` が記録ページ。GitHub Pages で `main` ブランチの直下から公開している
+- GitHub Pages で `main` ブランチの直下から公開している
   - 公開URL: https://7h7jycvgzv-cyber.github.io/100000000000000-/
 
 ### プロダクト
 
 | 名前 | 場所 | 内容 |
 |---|---|---|
-| Seed Radar | `seedradar/`、設計は `ARCHITECTURE.md` | arXiv の宇宙・量子・AIの最新論文を取得し、どんな巨大ビジネスやスタートアップの種になるかを英語と日本語で抽出・構造化する |
+| Seed Radar(主力) | 画面は `index.html`、コードは `seedradar/`、データは `data/`、設計は `ARCHITECTURE.md` | arXiv の宇宙・量子・AIの最新論文を取得し、どんな巨大ビジネスやスタートアップの種になるかを英語と日本語で抽出・構造化して公開する |
+| 開発の記録 | `log/index.html` | 「100兆円への記録」のページ |
 | 看護記録の要約の見本 | `mock/` | 前日の記録から「変化」だけを読む見本ページ。データはすべて架空 |
+
+### Seed Radar の更新
+
+「Seed Radar を更新して」と言われたら(Claude Code では `/seed-radar`)、`seedradar/prompts/update.md` の手順どおりに進める。
+論文の分析は、外部のLLM APIを呼ばずに、エージェント自身が読んで書く。
 
 ## 開発のルール
 
@@ -32,6 +38,7 @@ Claude Code と Codex の共通ルールです。両方のAIがこのファイ�
 - Claude Code と Codex が同じブランチを同時に編集しない
 - コードにはテストをつける。pushの前に `python -m unittest` を通す
 - テストは外部のネットワークやAPIに依存させない(固定のデータを使う)
+- `data/seeds.json` は手で書き換えない。`python -m seedradar merge` で作る
 - 依存ライブラリは必要なものだけ。追加したら理由を書く
 - コミットメッセージは日本語でよい
 

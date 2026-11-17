@@ -7,35 +7,62 @@ arXiv の宇宙・量子・AIの最新論文を取得し、それぞれの技術
 ## 全体の流れ
 
 ```
-arXiv API ──▶ 1. 取得 ──▶ 2. 抽出(LLM) ──▶ 3. 保存 ──▶ 4. 公開
-              fetch        analyze           store        publish
-              papers.json  seeds.json        履歴つき     Webページ
+arXiv API ─▶ 1. 取得 ─▶ 2. 抽出 ─▶ 3. 検証・統合 ─▶ 4. 公開
+             fetch       エージェント   validate / merge   index.html
+             papers.json  analysis/*.json  seeds.json         GitHub Pages
 ```
 
-| 段階 | 役割 | 状態 |
+| 段階 | 役割 | 実装 |
 |---|---|---|
-| 1. 取得 | arXiv API から分野ごとの最新論文を取り、同じ形に整える | **実装済み**(`seedradar/arxiv.py`) |
-| 2. 抽出 | 論文の要旨から、ビジネスの種を英語と日本語で構造化する | 未実装 |
-| 3. 保存 | 処理済みの論文を記録し、同じ論文を二度処理しない | 未実装 |
-| 4. 公開 | 一覧・絞り込みができるページを GitHub Pages で公開する | 未実装 |
+| 1. 取得 | arXiv API から分野ごとの最新論文を取り、同じ形に整える | `seedradar/arxiv.py` |
+| 2. 抽出 | 題名と要旨から、事業の種を英語と日本語で構造化する | コーディングエージェント(Claude Code / Codex)が `seedradar/prompts/update.md` に沿って書く |
+| 3. 検証・統合 | 抽出結果の形を検証し、公開用のデータにまとめる | `seedradar/seeds.py` |
+| 4. 公開 | 絞り込み・並べ替え・言語の切り替えができる画面 | `index.html`(サーバーなし) |
+
+### 費用をかけない構成
+
+- 抽出に外部のLLM APIを使わない。契約済みの Claude Code や Codex に、手順書を渡して分析させる
+- そのため APIキーは不要で、追加の課金もない
+- 代わりに、更新は人が1回指示する必要がある(下の「毎日の更新」)
 
 ## ディレクトリ
 
 ```
+index.html             Seed Radar の画面(data/seeds.json を読む)
+data/
+  papers.json          取得した最新の論文(要旨つき)
+  analysis/DATE.json   その日に書いた分析
+  seeds.json           公開用。これまでの分析をすべてまとめたもの
 seedradar/
-  arxiv.py      取得: URL組み立て、Atomフィードの解析、リトライ、分野の定義
-  cli.py        コマンド: python -m seedradar fetch
-  analyze.py    (予定)抽出: LLM呼び出し、出力の検証
-  store.py      (予定)保存: 処理済みIDの管理、日付ごとのファイル
-tests/
-  fixtures/     テスト用の固定データ(ネットワークに依存しない)
-data/           実行結果の出力先(.gitignore で除外)
+  arxiv.py             取得: URL組み立て、Atomフィードの解析、リトライ、分野の定義
+  seeds.py             分析の検証、seeds.json への統合、未分析の論文の一覧
+  cli.py               コマンド: fetch / pending / validate / merge
+  prompts/update.md    更新の手順書(分析の基準と出力の形)
+.claude/commands/seed-radar.md   Claude Code の /seed-radar コマンド
+tests/                 テスト(ネットワークに依存しない)
+log/                   開発の記録ページ
+mock/                  看護記録の要約の見本
 ```
 
-## 1. 取得(実装済み)
+## 毎日の更新
+
+Claude Code では `/seed-radar`、Codex では「Seed Radar を更新して」と指示する。エージェントは次を実行する。
 
 ```
-python -m seedradar fetch --max 10 --out data/papers.json
+python -m seedradar fetch                              # 最新の論文を取得(各分野5本)
+python -m seedradar pending                            # まだ分析していない論文を表示
+(エージェントが data/analysis/DATE.json を書く)
+python -m seedradar validate data/analysis/DATE.json   # 形を検証
+python -m seedradar merge data/analysis/DATE.json      # seeds.json に統合
+python -m unittest
+```
+
+PRをマージすると、GitHub Pages に反映される。
+
+## 1. 取得
+
+```
+python -m seedradar fetch                  # 各分野5本(既定)
 python -m seedradar fetch --fields quantum ai --max 50
 ```
 
@@ -86,55 +113,30 @@ python -m seedradar fetch --fields quantum ai --max 50
 - 通信エラー、429、5xx は最大3回までリトライ。4xx はすぐ失敗させる
 - arXiv がエラーを返したとき(エラー用のエントリ)は、例外にして止める
 
-## 2. 抽出(次に作る)
+## 2. 抽出
 
-論文1本の題名と要旨を LLM に渡し、次の形のJSONを受け取る。
+- 基準と出力の形は `seedradar/prompts/update.md` に書いてある。実例は `data/analysis/2026-11-17.json`
+- 読むのは題名と要旨だけ。要旨にない数字は作らない
+- 無理に種を作らない。事業にならない論文は `business_seeds` を空にし、スコアをすべて1にする
+- 市場規模の具体的な金額は書かない(出典を確認できないため)
 
-```json
-{
-  "arxiv_id": "2611.20756",
-  "version": 1,
-  "technology": { "en": "...", "ja": "..." },
-  "breakthrough": { "en": "何が新しくできるようになったか", "ja": "..." },
-  "business_seeds": [
-    {
-      "title": { "en": "...", "ja": "..." },
-      "customer": { "en": "誰が買うか", "ja": "..." },
-      "market": { "en": "どの市場か、どのくらい大きいか", "ja": "..." },
-      "why_now": { "en": "...", "ja": "..." },
-      "time_to_market": "now | 1-3y | 3-10y | 10y+",
-      "moat": { "en": "参入障壁", "ja": "..." }
-    }
-  ],
-  "scores": { "market_size": 1, "feasibility": 1, "startup_fit": 1 },
-  "confidence": "low | medium | high",
-  "caveats": { "en": "この推定の弱いところ", "ja": "..." }
-}
-```
+## 3. 検証・統合
 
-- スコアは1〜5。一覧の並べ替えに使う
-- 多くの基礎研究は、すぐには事業にならない。無理に種を作らせず、`business_seeds` が空でもよいことにする
-- 市場規模などの数字は LLM の推定であり、出典つきの事実ではない。ページにもそう明記する
-- 出力はJSONスキーマで検証し、合わないものは1回だけ再試行して、それでもだめなら捨てて記録する
+- `validate`: 必須の項目、英語と日本語の両方があること、スコアが1〜5の整数であること、選択肢の値を確認する
+- `merge`: 論文の情報(題名、著者、リンクなど)と分析を1件にまとめ、`seeds.json` に追加する
+  - 同じ論文をもう一度分析したら、新しい分析で置き換える
+  - `papers.json` にない論文や、版(version)が違う分析は拒否する
+  - 公開用のデータには要旨を入れない(画面から arXiv にリンクする)
+- `seeds.json` は過去の分をすべて持つ。新しい順に並ぶ
 
-### コストの管理
+## 4. 公開(`index.html`)
 
-- 渡すのは題名と要旨だけ(PDF本文は読まない)
-- `arxiv_id` と `version` をキーにして、処理済みの論文は飛ばす
-- 1回の実行で処理する本数に上限をつける(`--limit`)
-- APIキーは環境変数で渡す。リポジトリには入れない
-
-## 3. 保存
-
-- `data/seeds/YYYY-MM-DD.json` に日ごとの結果、`data/seeds/index.json` に処理済みIDの一覧
-- 公開するときは、公開用のブランチかフォルダにJSONを置く(次の「公開」で決める)
-
-## 4. 公開
-
-- 静的なページ(HTMLとJavaScript)が `seeds.json` を読んで表示する。サーバーは持たない
-- 機能: 分野の絞り込み、スコア順の並べ替え、英語と日本語の切り替え、元の論文へのリンク
-- 毎日の更新は GitHub Actions の定期実行で行う(取得 → 抽出 → JSONを更新 → Pagesに反映)
-- arXiv の利用条件に合わせ、ページに「Thank you to arXiv for use of its open access interoperability.」と、各論文へのリンクを載せる
+- 英語 / 日本語の切り替え(選んだ言語はブラウザに保存。初回はブラウザの言語に合わせる)
+- 分野の絞り込み、「事業の種がある論文だけ」の絞り込み
+- 並べ替え: 合計スコア、市場規模、実現性、起業向き、新しい順
+- 各論文に、技術の要約、事業の種(顧客・市場・なぜ今か・参入障壁・市場に出るまで)、注意点、確信度、arXiv へのリンク
+- 明るい画面と暗い画面の両方に対応。スマホの幅でも崩れない
+- フッターに、AIによる推定であることの注意書きと、arXiv への謝辞を載せている
 
 ## テスト
 
@@ -143,20 +145,31 @@ python -m unittest
 ```
 
 - ネットワークには出ない。`tests/fixtures/feed.xml`(作り物のフィード)を使う
-- URLの組み立て、フィードの解析、分野をまたぐ重複のまとめ、リトライ、CLIの出力を確認している
+- 取得: URLの組み立て、フィードの解析、分野をまたぐ重複のまとめ、リトライ
+- 分析: 検証のルール、統合、版の不一致の拒否、未分析の一覧
+- 公開データ: コミットされた `data/analysis/*.json` と `data/seeds.json` が、いつも検証を通ること
 
 ## 進め方
 
 | 段階 | 内容 | 状態 |
 |---|---|---|
 | M1 | 取得とテスト | 完了 |
-| M2 | 抽出(LLM)。まず10本で出力の質を確かめる | 次 |
-| M3 | 保存と、処理済みの管理 | |
-| M4 | 公開ページ | |
-| M5 | GitHub Actions で毎日自動更新 | |
+| M2 | 抽出の手順と、最初の15本の分析 | 完了 |
+| M3 | 検証・統合 | 完了 |
+| M4 | 公開ページ | 完了 |
+| M5 | 毎日の更新を自動にする | 次 |
+| M6 | アクセス解析、週1回のまとめ | |
 
-## オーナーが決めること
+### M5 について
 
-1. **抽出に使うLLM**: Claude API か OpenAI API か。APIキーの用意と、1ヶ月の上限金額
-2. **1日に処理する本数**: 3分野で1日に数百本出る。全部か、分野ごとに上位だけか
-3. **公開の形**: 自分用のダッシュボードか、誰でも見られるページか
+GitHub Actions だけでは自動にできない(抽出にエージェントが必要なため)。候補は2つ。
+
+1. Claude Code のクラウドのスケジュール実行で、毎日 `/seed-radar` を動かす(追加の課金なし。PRのマージは人がやる)
+2. LLM API を使って GitHub Actions で全自動にする(APIの費用がかかる)
+
+## 今の限界
+
+- 分析は題名と要旨だけにもとづく推定。本文は読んでいない
+- 市場や顧客の記述は、出典で確認したものではない
+- 「上位5本」は、各分野の新しい順の5本。重要度で選んでいるわけではない
+- 画面は `seeds.json` を全部読み込む。数千本を超えたら、月ごとに分けるなどの対応が要る

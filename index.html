@@ -1,103 +1,505 @@
 <!doctype html>
-<html lang="ja">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>100兆円への記録</title>
-<meta name="description" content="22歳、スキルなし・資金なしから100兆円を目指す記録。AI→宇宙→量子。">
+<title>Seed Radar</title>
+<meta name="description" content="The latest arXiv papers in space, quantum computing and AI, read for the businesses they could become. English and Japanese.">
+<meta property="og:title" content="Seed Radar">
+<meta property="og:description" content="The latest arXiv papers in space, quantum computing and AI, read for the businesses they could become.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
+  /* Layout: a ranked reading list. Sticky controls on top, one column of paper rows, score block at the left of each row. */
   :root {
-    --bg: #ECEFF4;
+    --bg: #EEF0F4;
     --surface: #FFFFFF;
-    --ink: #142030;
-    --muted: #5A6879;
-    --line: #D3D9E2;
-    --accent: #2B54D9;
-    --done: #178F62;
-    --sans: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
-    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+    --ink: #10182A;
+    --muted: #5A6578;
+    --line: #D5DAE3;
+    --accent: #3532C8;
+    --accent-ink: #FFFFFF;
+    --space: #6243CF;
+    --quantum: #0B8275;
+    --ai: #B4580A;
+    --track: #E3E7EE;
+    --sans: "Instrument Sans", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #0C121B; --surface: #141C28; --ink: #E5EAF1; --muted: #8C98AA;
-      --line: #253142; --accent: #7E9CFF; --done: #3CC48E;
+      --bg: #0A0E18; --surface: #121929; --ink: #E6EAF2; --muted: #8D98AC; --line: #222B3F;
+      --accent: #8F8DFF; --accent-ink: #0A0E18;
+      --space: #A994FF; --quantum: #4CCFBF; --ai: #F0A45A; --track: #1D2638;
       color-scheme: dark;
     }
   }
   * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--ink);
-    font-family: var(--sans); font-size: 16px; line-height: 1.7;
-    padding: 48px 16px 64px;
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.6; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 16px; }
+  a { color: inherit; }
+  button, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  header { padding: 36px 0 20px; }
+  .brand { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .mark { display: flex; align-items: center; gap: 12px; }
+  .sweep {
+    width: 34px; height: 34px; border-radius: 50%; flex: none;
+    background:
+      radial-gradient(circle, var(--accent) 0 2.5px, transparent 3px),
+      conic-gradient(from 20deg, var(--accent) 0 14%, transparent 14%),
+      radial-gradient(circle, transparent 0 8px, var(--line) 8px 9px, transparent 9px 15px, var(--line) 15px 16px, transparent 16px);
+    border: 1px solid var(--line);
   }
-  main { max-width: 680px; margin: 0 auto; display: grid; gap: 40px; }
-  .label { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; color: var(--muted); }
-  h1 { font-size: clamp(32px, 7vw, 52px); font-weight: 900; line-height: 1.2; margin: 8px 0 16px; }
-  h2 { font-size: 18px; margin: 0 0 12px; }
-  .lead { color: var(--muted); margin: 0; }
-  .target {
-    font-family: var(--mono); font-weight: 600; font-size: clamp(20px, 5vw, 30px);
-    color: var(--accent); overflow-wrap: anywhere; margin: 0;
+  h1 { font-size: 26px; font-weight: 700; letter-spacing: -.01em; margin: 0; line-height: 1.2; }
+  .tagline { margin: 14px 0 0; max-width: 62ch; font-size: 17px; text-wrap: balance; }
+  .meta { margin: 10px 0 0; color: var(--muted); font-size: 12.5px; font-family: var(--mono); }
+
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface); }
+  .seg button { border: 0; background: transparent; padding: 7px 13px; cursor: pointer; font-weight: 600; font-size: 13px; color: var(--muted); }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+
+  .controls {
+    position: sticky; top: 0; z-index: 5; background: var(--bg);
+    border-block: 1px solid var(--line); padding: 10px 0;
   }
-  .path { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-weight: 700; }
-  .path span { padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
-  .path i { color: var(--muted); font-style: normal; }
-  .log { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
-  .log li {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
-    padding: 14px 16px; display: grid; gap: 4px;
+  .controls .wrap { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    border: 1px solid var(--line); background: var(--surface); border-radius: 999px;
+    padding: 5px 12px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--muted);
+    display: inline-flex; align-items: center; gap: 6px;
   }
-  .log .day { font-family: var(--mono); font-weight: 600; color: var(--done); }
-  .log .todo .day { color: var(--muted); }
-  .rules { margin: 0; padding-left: 1.2em; }
-  footer { color: var(--muted); font-size: 13px; }
+  .chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--dot, var(--muted)); }
+  .chip[data-field="all"]::before { display: none; }
+  .chip[aria-pressed="true"] { border-color: var(--ink); color: var(--ink); }
+  .chip .n { font-family: var(--mono); font-weight: 400; font-size: 12px; }
+  .spacer { flex: 1; }
+  .ctl { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+  select { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; font-size: 13px; }
+  input[type=checkbox] { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; }
+
+  main { padding: 20px 0 8px; }
+  .count { color: var(--muted); font-size: 13px; margin: 0 0 12px; }
+  .list { display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+  .paper {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 0;
+  }
+  .score { padding: 18px 16px; border-right: 1px solid var(--line); display: grid; gap: 12px; align-content: start; }
+  .total { font-family: var(--mono); font-weight: 600; font-size: 30px; line-height: 1; }
+  .total small { font-size: 13px; font-weight: 400; color: var(--muted); }
+  .bars { display: grid; gap: 7px; }
+  .bar { display: grid; gap: 3px; font-size: 11px; color: var(--muted); }
+  .bar .row { display: flex; justify-content: space-between; gap: 6px; }
+  .bar .row b { font-family: var(--mono); font-weight: 500; color: var(--ink); }
+  .pips { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; }
+  .pips i { height: 5px; border-radius: 1px; background: var(--track); }
+  .pips i.on { background: var(--accent); }
+  .body { padding: 18px 20px; min-width: 0; display: grid; gap: 10px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 12px; color: var(--muted); }
+  .tag { font-weight: 700; letter-spacing: .04em; text-transform: uppercase; font-size: 11px; color: var(--c); display: inline-flex; align-items: center; gap: 5px; }
+  .tag::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--c); }
+  .paper h2 { font-size: 17px; line-height: 1.4; margin: 0; font-weight: 600; text-wrap: balance; overflow-wrap: anywhere; }
+  .paper h2 a { text-decoration: none; }
+  .paper h2 a:hover { text-decoration: underline; }
+  .tech { margin: 0; color: var(--muted); }
+  .seed-line { margin: 0; padding: 10px 12px; border-radius: 8px; background: var(--bg); display: grid; gap: 2px; }
+  .seed-line .k { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+  .seed-line .v { font-weight: 600; }
+  .seed-line.none .k { color: var(--muted); }
+  .seed-line.none .v { font-weight: 400; color: var(--muted); }
+  .seed-line .more { font-size: 12px; color: var(--muted); }
+  details { border-top: 1px solid var(--line); padding-top: 10px; }
+  summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent); width: fit-content; }
+  .detail { display: grid; gap: 16px; padding-top: 12px; }
+  .detail h3 { font-size: 12px; margin: 0 0 4px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .detail p { margin: 0; }
+  .seed { border-left: 3px solid var(--accent); padding-left: 12px; display: grid; gap: 8px; }
+  .seed h4 { margin: 0; font-size: 15px; }
+  .seed dl { margin: 0; display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 6px 12px; font-size: 14px; }
+  .seed dt { color: var(--muted); font-size: 12.5px; padding-top: 1px; }
+  .seed dd { margin: 0; }
+  .pill { font-family: var(--mono); font-size: 11.5px; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
+  .links { display: flex; gap: 14px; font-size: 13px; flex-wrap: wrap; }
+  .links a { color: var(--accent); }
+  .state { padding: 40px 0; color: var(--muted); text-align: center; }
+
+  footer { border-top: 1px solid var(--line); margin-top: 28px; padding: 20px 0 48px; color: var(--muted); font-size: 12.5px; }
+  footer p { margin: 0 0 8px; max-width: 78ch; }
+  footer a { color: var(--muted); }
+
+  @media (max-width: 640px) {
+    header { padding-top: 24px; }
+    .paper { grid-template-columns: 1fr; }
+    .score { border-right: 0; border-bottom: 1px solid var(--line); grid-template-columns: auto 1fr; align-items: center; gap: 16px; padding: 14px 16px; }
+    .bars { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .body { padding: 14px 16px 16px; }
+    .seed dl { grid-template-columns: 1fr; gap: 2px; }
+    .seed dd { margin-bottom: 6px; }
+    .spacer { display: none; }
+  }
 </style>
 </head>
 <body>
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <div class="mark"><span class="sweep" aria-hidden="true"></span><h1>Seed Radar</h1></div>
+      <div class="seg" role="group" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">English</button>
+        <button type="button" data-lang="ja" aria-pressed="false">日本語</button>
+      </div>
+    </div>
+    <p class="tagline" data-i18n="tagline"></p>
+    <p class="meta" id="meta"></p>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="wrap">
+    <div class="chips" id="chips" role="group" aria-label="Field"></div>
+    <span class="spacer"></span>
+    <label class="ctl"><input type="checkbox" id="only-seeds"><span data-i18n="onlySeeds"></span></label>
+    <label class="ctl"><span data-i18n="sort"></span>
+      <select id="sort">
+        <option value="total" data-i18n="sortTotal"></option>
+        <option value="market_size" data-i18n="market_size"></option>
+        <option value="feasibility" data-i18n="feasibility"></option>
+        <option value="startup_fit" data-i18n="startup_fit"></option>
+        <option value="newest" data-i18n="sortNewest"></option>
+      </select>
+    </label>
+  </div>
+</div>
+
 <main>
-  <header>
-    <div class="label">MISSION LOG · PHASE 1</div>
-    <h1>100兆円への記録</h1>
-    <p class="lead">22歳。スキルなし、資金なし。<br>AIで「作れる人」になるところから始めます。</p>
-  </header>
-
-  <section>
-    <h2>目標</h2>
-    <p class="target">¥100,000,000,000,000</p>
-  </section>
-
-  <section>
-    <h2>道すじ</h2>
-    <div class="path"><span>AI</span><i>→</i><span>宇宙</span><i>→</i><span>量子</span></div>
-  </section>
-
-  <section>
-    <h2>毎日のルール</h2>
-    <ul class="rules">
-      <li>作る 3時間</li>
-      <li>英語 30分</li>
-      <li>発信 1回</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>記録</h2>
-    <ol class="log">
-      <li>
-        <span class="day">Day 1 · 2026.10.31</span>
-        <span>Claude Codeでこのページを作って、GitHub Pagesで公開した。</span>
-      </li>
-      <li class="todo">
-        <span class="day">Day 2</span>
-        <span>ターミナルとgitの基本(commit・push)を覚える。</span>
-      </li>
-    </ol>
-  </section>
-
-  <footer>毎日1つ、作ったものを公開していきます。</footer>
+  <div class="wrap">
+    <p class="count" id="count" aria-live="polite"></p>
+    <ol class="list" id="list"></ol>
+    <p class="state" id="state" data-i18n="loading"></p>
+  </div>
 </main>
+
+<footer>
+  <div class="wrap">
+    <p data-i18n="disclaimer"></p>
+    <p>Thank you to arXiv for use of its open access interoperability.</p>
+    <p><a href="https://github.com/7h7jycvgzv-cyber/100000000000000-" data-i18n="source"></a> · <a href="log/" data-i18n="log"></a></p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var I18N = {
+    en: {
+      tagline: 'The latest arXiv papers in space, quantum computing and AI, read for the businesses they could become.',
+      onlySeeds: 'Only papers with a seed',
+      sort: 'Sort',
+      sortTotal: 'Total score',
+      sortNewest: 'Newest',
+      market_size: 'Market size',
+      feasibility: 'Feasibility',
+      startup_fit: 'Startup fit',
+      all: 'All',
+      loading: 'Loading papers…',
+      loadError: 'Could not load the data. Reload the page to try again.',
+      empty: 'No papers match these filters.',
+      count: function (n, total) { return n + ' of ' + total + ' papers'; },
+      updated: 'Updated',
+      seed: 'Business seed',
+      noSeedK: 'No seed',
+      noSeedV: 'No near-term business seed found in this paper.',
+      moreSeeds: function (n) { return '+' + n + ' more in details'; },
+      details: 'Details',
+      breakthrough: 'What is new',
+      seeds: 'Business seeds',
+      caveats: 'Caveats',
+      customer: 'Customer',
+      market: 'Market',
+      why_now: 'Why now',
+      moat: 'Moat',
+      ttm: 'Time to market',
+      confidence: 'Confidence',
+      conf: { low: 'low', medium: 'medium', high: 'high' },
+      ttmv: { 'now': 'now', '1-3y': '1–3 years', '3-10y': '3–10 years', '10y+': '10+ years' },
+      abs: 'Abstract on arXiv',
+      pdf: 'PDF',
+      disclaimer: 'Analyses are written by an AI model from each paper\'s title and abstract only. Markets, customers and scores are estimates, not verified facts, and not investment advice. Read the paper before acting on anything here.',
+      source: 'Source code',
+      log: 'Build log (Japanese)'
+    },
+    ja: {
+      tagline: '宇宙・量子計算・AIの最新のarXiv論文を、「どんな事業になりうるか」という目で読む。',
+      onlySeeds: '事業の種がある論文だけ',
+      sort: '並び順',
+      sortTotal: '合計スコア',
+      sortNewest: '新しい順',
+      market_size: '市場規模',
+      feasibility: '実現性',
+      startup_fit: '起業向き',
+      all: 'すべて',
+      loading: '論文を読み込んでいます…',
+      loadError: 'データを読み込めませんでした。ページを再読み込みしてください。',
+      empty: '条件に合う論文がありません。',
+      count: function (n, total) { return total + '本中 ' + n + '本'; },
+      updated: '更新',
+      seed: '事業の種',
+      noSeedK: '種なし',
+      noSeedV: 'この論文から、近い将来の事業の種は見つかりませんでした。',
+      moreSeeds: function (n) { return 'ほか' + n + '件は詳細に'; },
+      details: '詳細',
+      breakthrough: '何が新しいか',
+      seeds: '事業の種',
+      caveats: '注意点',
+      customer: '顧客',
+      market: '市場',
+      why_now: 'なぜ今か',
+      moat: '参入障壁',
+      ttm: '市場に出るまで',
+      confidence: '確信度',
+      conf: { low: '低', medium: '中', high: '高' },
+      ttmv: { 'now': '今すぐ', '1-3y': '1〜3年', '3-10y': '3〜10年', '10y+': '10年以上' },
+      abs: 'arXivで要旨を読む',
+      pdf: 'PDF',
+      disclaimer: '分析は、AIモデルが各論文の題名と要旨だけを読んで書いたものです。市場・顧客・スコアは推定で、確認された事実ではなく、投資の助言でもありません。ここにある内容をもとに動く前に、論文そのものを読んでください。',
+      source: 'ソースコード',
+      log: '開発の記録'
+    }
+  };
+  var SCORE_KEYS = ['market_size', 'feasibility', 'startup_fit'];
+  var FIELD_COLORS = { space: 'var(--space)', quantum: 'var(--quantum)', ai: 'var(--ai)' };
+
+  var state = { lang: 'en', field: 'all', sort: 'total', onlySeeds: false, data: null, failed: false };
+
+  try {
+    var saved = localStorage.getItem('seedradar-lang');
+    if (saved === 'en' || saved === 'ja') state.lang = saved;
+    else if ((navigator.language || '').toLowerCase().indexOf('ja') === 0) state.lang = 'ja';
+  } catch (e) {
+    if ((navigator.language || '').toLowerCase().indexOf('ja') === 0) state.lang = 'ja';
+  }
+
+  function $(id) { return document.getElementById(id); }
+  function t(key) { return I18N[state.lang][key]; }
+  function tx(obj) { return (obj && (obj[state.lang] || obj.en)) || ''; }
+  function el(tag, cls, text) {
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+  function total(p) { return SCORE_KEYS.reduce(function (sum, k) { return sum + p.scores[k]; }, 0); }
+  function cleanTitle(s) { return s.replace(/\$/g, ''); }
+
+  function visiblePapers() {
+    var papers = state.data.papers.filter(function (p) {
+      if (state.field !== 'all' && p.fields.indexOf(state.field) === -1) return false;
+      if (state.onlySeeds && !p.business_seeds.length) return false;
+      return true;
+    });
+    papers.sort(function (a, b) {
+      var diff;
+      if (state.sort === 'newest') diff = a.published < b.published ? 1 : a.published > b.published ? -1 : 0;
+      else if (state.sort === 'total') diff = total(b) - total(a);
+      else diff = b.scores[state.sort] - a.scores[state.sort] || total(b) - total(a);
+      return diff || (a.arxiv_id < b.arxiv_id ? 1 : -1);
+    });
+    return papers;
+  }
+
+  function renderStatic() {
+    document.documentElement.lang = state.lang;
+    document.querySelectorAll('[data-i18n]').forEach(function (node) {
+      var value = t(node.getAttribute('data-i18n'));
+      if (typeof value === 'string') node.textContent = value;
+    });
+    document.querySelectorAll('[data-lang]').forEach(function (btn) {
+      btn.setAttribute('aria-pressed', String(btn.getAttribute('data-lang') === state.lang));
+    });
+  }
+
+  function renderChips() {
+    var box = $('chips');
+    box.textContent = '';
+    var fields = state.data.fields;
+    var items = [{ key: 'all', label: t('all'), n: state.data.papers.length }];
+    Object.keys(fields).forEach(function (key) {
+      items.push({
+        key: key,
+        label: state.lang === 'ja' ? fields[key].label_ja : fields[key].label_en,
+        n: state.data.papers.filter(function (p) { return p.fields.indexOf(key) !== -1; }).length
+      });
+    });
+    items.forEach(function (item) {
+      var btn = el('button', 'chip');
+      btn.type = 'button';
+      btn.setAttribute('data-field', item.key);
+      btn.setAttribute('aria-pressed', String(state.field === item.key));
+      if (FIELD_COLORS[item.key]) btn.style.setProperty('--dot', FIELD_COLORS[item.key]);
+      btn.appendChild(document.createTextNode(item.label + ' '));
+      btn.appendChild(el('span', 'n', String(item.n)));
+      btn.addEventListener('click', function () { state.field = item.key; render(); });
+      box.appendChild(btn);
+    });
+  }
+
+  function scoreBlock(p) {
+    var box = el('div', 'score');
+    var tot = el('div', 'total', String(total(p)));
+    tot.appendChild(el('small', '', '/15'));
+    tot.setAttribute('aria-label', t('sortTotal') + ' ' + total(p) + '/15');
+    box.appendChild(tot);
+    var bars = el('div', 'bars');
+    SCORE_KEYS.forEach(function (key) {
+      var bar = el('div', 'bar');
+      var row = el('div', 'row');
+      row.appendChild(el('span', '', t(key)));
+      row.appendChild(el('b', '', String(p.scores[key])));
+      bar.appendChild(row);
+      var pips = el('div', 'pips');
+      pips.setAttribute('aria-hidden', 'true');
+      for (var i = 1; i <= 5; i++) pips.appendChild(el('i', i <= p.scores[key] ? 'on' : ''));
+      bar.appendChild(pips);
+      bars.appendChild(bar);
+    });
+    box.appendChild(bars);
+    return box;
+  }
+
+  function seedBlock(seed) {
+    var box = el('div', 'seed');
+    box.appendChild(el('h4', '', tx(seed.title)));
+    var dl = el('dl');
+    ['customer', 'market', 'why_now', 'moat'].forEach(function (key) {
+      dl.appendChild(el('dt', '', t(key)));
+      dl.appendChild(el('dd', '', tx(seed[key])));
+    });
+    dl.appendChild(el('dt', '', t('ttm')));
+    var dd = el('dd');
+    dd.appendChild(el('span', 'pill', t('ttmv')[seed.time_to_market] || seed.time_to_market));
+    dl.appendChild(dd);
+    box.appendChild(dl);
+    return box;
+  }
+
+  function paperRow(p, openIds) {
+    var li = el('li', 'paper');
+    li.appendChild(scoreBlock(p));
+
+    var body = el('div', 'body');
+    var tags = el('div', 'tags');
+    p.fields.forEach(function (key) {
+      var f = state.data.fields[key];
+      var tag = el('span', 'tag', f ? (state.lang === 'ja' ? f.label_ja : f.label_en) : key);
+      tag.style.setProperty('--c', FIELD_COLORS[key] || 'var(--muted)');
+      tags.appendChild(tag);
+    });
+    tags.appendChild(el('span', 'mono', p.published.slice(0, 10)));
+    tags.appendChild(el('span', 'mono', 'arXiv:' + p.arxiv_id));
+    tags.appendChild(el('span', 'pill', t('confidence') + ' ' + t('conf')[p.confidence]));
+    body.appendChild(tags);
+
+    var h2 = el('h2');
+    var link = el('a', '', cleanTitle(p.title));
+    link.href = p.abs_url;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.lang = 'en';
+    h2.appendChild(link);
+    body.appendChild(h2);
+    body.appendChild(el('p', 'tech', tx(p.technology)));
+
+    var seeds = p.business_seeds;
+    var line = el('p', 'seed-line' + (seeds.length ? '' : ' none'));
+    line.appendChild(el('span', 'k', seeds.length ? t('seed') : t('noSeedK')));
+    line.appendChild(el('span', 'v', seeds.length ? tx(seeds[0].title) : t('noSeedV')));
+    if (seeds.length > 1) line.appendChild(el('span', 'more', t('moreSeeds')(seeds.length - 1)));
+    body.appendChild(line);
+
+    var details = el('details');
+    details.setAttribute('data-id', p.arxiv_id);
+    if (openIds[p.arxiv_id]) details.open = true;
+    details.appendChild(el('summary', '', t('details')));
+    var detail = el('div', 'detail');
+
+    var s1 = el('section');
+    s1.appendChild(el('h3', '', t('breakthrough')));
+    s1.appendChild(el('p', '', tx(p.breakthrough)));
+    detail.appendChild(s1);
+
+    if (seeds.length) {
+      var s2 = el('section');
+      s2.appendChild(el('h3', '', t('seeds')));
+      var wrap = el('div');
+      wrap.style.display = 'grid';
+      wrap.style.gap = '16px';
+      seeds.forEach(function (seed) { wrap.appendChild(seedBlock(seed)); });
+      s2.appendChild(wrap);
+      detail.appendChild(s2);
+    }
+
+    var s3 = el('section');
+    s3.appendChild(el('h3', '', t('caveats')));
+    s3.appendChild(el('p', '', tx(p.caveats)));
+    detail.appendChild(s3);
+
+    var links = el('div', 'links');
+    [[p.abs_url, t('abs')], [p.pdf_url, t('pdf')]].forEach(function (pair) {
+      var a = el('a', '', pair[1]);
+      a.href = pair[0];
+      a.target = '_blank';
+      a.rel = 'noopener';
+      links.appendChild(a);
+    });
+    detail.appendChild(links);
+
+    details.appendChild(detail);
+    body.appendChild(details);
+    li.appendChild(body);
+    return li;
+  }
+
+  function render() {
+    renderStatic();
+    var list = $('list'), stateEl = $('state');
+    if (state.failed) { stateEl.hidden = false; stateEl.textContent = t('loadError'); return; }
+    if (!state.data) { stateEl.hidden = false; stateEl.textContent = t('loading'); return; }
+
+    var openIds = {};
+    list.querySelectorAll('details[open]').forEach(function (d) { openIds[d.getAttribute('data-id')] = true; });
+
+    renderChips();
+    $('meta').textContent = t('updated') + ' ' + state.data.updated_at.slice(0, 10) + ' · arXiv';
+    var papers = visiblePapers();
+    $('count').textContent = t('count')(papers.length, state.data.papers.length);
+    list.textContent = '';
+    papers.forEach(function (p) { list.appendChild(paperRow(p, openIds)); });
+    stateEl.hidden = papers.length > 0;
+    if (!papers.length) stateEl.textContent = t('empty');
+  }
+
+  document.querySelectorAll('[data-lang]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      state.lang = btn.getAttribute('data-lang');
+      try { localStorage.setItem('seedradar-lang', state.lang); } catch (e) {}
+      render();
+    });
+  });
+  $('sort').addEventListener('change', function (e) { state.sort = e.target.value; render(); });
+  $('only-seeds').addEventListener('change', function (e) { state.onlySeeds = e.target.checked; render(); });
+
+  render();
+  fetch('data/seeds.json', { cache: 'no-cache' })
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function (data) { state.data = data; render(); })
+    .catch(function () { state.failed = true; render(); });
+})();
+</script>
 </body>
 </html>

@@ -1,0 +1,955 @@
+{
+  "updated_at": "2026-11-17T05:44:32Z",
+  "source": "arXiv API",
+  "fields": {
+    "space": {
+      "label_en": "Space & Astrophysics",
+      "label_ja": "宇宙開発",
+      "categories": [
+        "astro-ph.EP",
+        "astro-ph.IM",
+        "physics.space-ph"
+      ]
+    },
+    "quantum": {
+      "label_en": "Quantum Computing",
+      "label_ja": "量子計算",
+      "categories": [
+        "quant-ph"
+      ]
+    },
+    "ai": {
+      "label_en": "Artificial Intelligence",
+      "label_ja": "AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "cs.CL"
+      ]
+    }
+  },
+  "count": 15,
+  "papers": [
+    {
+      "arxiv_id": "2611.20765",
+      "version": 1,
+      "title": "STA: A Split Temporal Adversary Method for Evaluating Robustness of Multimodal RL-based Driving Policies",
+      "authors": [
+        "Shenghao Xiong",
+        "Xiaolin Chang"
+      ],
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR",
+        "cs.LG",
+        "cs.RO"
+      ],
+      "published": "2026-11-16T09:16:45Z",
+      "abs_url": "https://arxiv.org/abs/2611.20765",
+      "pdf_url": "https://arxiv.org/pdf/2611.20765v1",
+      "fields": [
+        "ai"
+      ],
+      "analyzed_at": "2026-11-17",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "STA: an adversarial test that delays individual sensor streams at chosen moments to find when a multimodal reinforcement-learning driving policy fails.",
+        "ja": "STA:センサーごとの入力を狙ったタイミングで遅らせ、複数のセンサーを使う強化学習の運転方策がいつ失敗するかを探す、敵対的なテスト手法。"
+      },
+      "breakthrough": {
+        "en": "In the CARLA simulator it more than doubles the collision rate of the strongest prior attack while using 17.8% fewer attempts, and it also works against a vision-language driving policy.",
+        "ja": "CARLAシミュレーターで、これまで最も強かった攻撃の2倍以上の衝突率を、17.8%少ない試行回数で引き起こした。視覚言語モデルを使った運転方策にも効いた。"
+      },
+      "business_seeds": [
+        {
+          "title": {
+            "en": "Sensor-timing robustness testing for autonomy software",
+            "ja": "自動運転・ロボットのソフトウェア向け、センサーの時間ずれへの耐性テスト"
+          },
+          "customer": {
+            "en": "Autonomous-driving and driver-assistance developers, robotics companies, and simulation vendors.",
+            "ja": "自動運転・運転支援の開発企業、ロボット企業、シミュレーションの事業者。"
+          },
+          "market": {
+            "en": "Simulation and validation tools for autonomous systems. A sizeable specialist market tied to safety certification.",
+            "ja": "自律システムのシミュレーションと検証ツール。安全性の認証に結びついた、まとまった規模の専門市場。"
+          },
+          "why_now": {
+            "en": "End-to-end and vision-language driving policies are moving toward deployment, and sensor latency is a failure mode that standard tests miss.",
+            "ja": "エンドツーエンド型や視覚言語モデルを使う運転方策が実用に近づいている。センサーの遅延は、普通のテストでは見つけにくい故障の原因。"
+          },
+          "time_to_market": "1-3y",
+          "moat": {
+            "en": "A library of attack scenarios and integrations with customers' simulators. Simulation vendors can add this as a feature.",
+            "ja": "攻撃シナリオの蓄積と、顧客のシミュレーターとの統合。シミュレーションの事業者が機能として取り込む可能性がある。"
+          }
+        }
+      ],
+      "scores": {
+        "market_size": 3,
+        "feasibility": 4,
+        "startup_fit": 3
+      },
+      "confidence": "medium",
+      "caveats": {
+        "en": "Results are in simulation only. Whether the same weaknesses appear in real vehicles with production sensor stacks is not shown.",
+        "ja": "結果はシミュレーションだけ。量産されるセンサー構成の実車で同じ弱点が出るかは示されていない。"
+      }
+    },
+    {
+      "arxiv_id": "2611.20759",
+      "version": 1,
+      "title": "Instant Weight-Space Consolidation for Long-Term Memory in LLMs",
+      "authors": [
+        "Manan Suri",
+        "Dinesh Manocha"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-11-16T09:09:55Z",
+      "abs_url": "https://arxiv.org/abs/2611.20759",
+      "pdf_url": "https://arxiv.org/pdf/2611.20759v1",
+      "fields": [
+        "ai"
+      ],
+      "analyzed_at": "2026-11-17",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "CLAM: a hypernetwork that compiles a stream of conversation sessions into a small adapter for the model's weights in one forward pass, paired with a buffer of verbatim details.",
+        "ja": "CLAM:会話の履歴を、モデルの重みに足す小さなアダプターへ1回の計算でまとめる仕組み。細かい事実をそのまま残すバッファと組み合わせて使う。"
+      },
+      "breakthrough": {
+        "en": "Long-term memory that changes the model itself without fine-tuning and without extra LLM calls. On two memory benchmarks with 2-7B open models it beats text-extraction memory systems and builds its memory 3-151x faster.",
+        "ja": "ファインチューニングも追加のLLM呼び出しもなしで、モデル自体に長期記憶を持たせられる。2〜7Bのオープンモデルを使った2つの記憶ベンチマークで、文章を抜き出して保存する方式を上回り、記憶を作る時間は3〜151分の1になった。"
+      },
+      "business_seeds": [
+        {
+          "title": {
+            "en": "Per-user memory layer for self-hosted LLM assistants",
+            "ja": "自社運用のLLMアシスタント向け、ユーザーごとの記憶レイヤー"
+          },
+          "customer": {
+            "en": "Companies that run open-weight models for support, sales or internal assistants, and agent platforms that serve many end users.",
+            "ja": "オープンモデルを自社で動かして、サポート・営業・社内アシスタントに使っている企業。多くの利用者を抱えるエージェント基盤の事業者。"
+          },
+          "market": {
+            "en": "LLM infrastructure for agents and personalization. Large and growing fast; no reliable size estimate for the memory layer alone.",
+            "ja": "エージェントとパーソナライズ向けのLLMインフラ。大きく、伸びも速い。記憶レイヤーだけの市場規模については、信頼できる推定がない。"
+          },
+          "why_now": {
+            "en": "Agents are expected to remember users across sessions, and memory built by extra LLM calls gets more expensive with every conversation.",
+            "ja": "エージェントには、セッションをまたいで利用者を覚えていることが求められている。LLMを追加で呼んで記憶を作る方式は、会話が増えるほど費用がかさむ。"
+          },
+          "time_to_market": "1-3y",
+          "moat": {
+            "en": "A trained hypernetwork is needed for each base model, plus serving infrastructure that swaps one adapter per user. Both take time to build, but a model provider could ship the same thing natively.",
+            "ja": "ベースモデルごとに学習済みのハイパーネットワークが必要で、利用者ごとにアダプターを差し替えて配信する基盤も要る。どちらも作るのに時間がかかる。ただし、モデルの提供元が同じ機能を標準で載せる可能性がある。"
+          }
+        },
+        {
+          "title": {
+            "en": "On-device personal assistant that learns its owner",
+            "ja": "持ち主を覚えていく、端末内で動くパーソナルアシスタント"
+          },
+          "customer": {
+            "en": "Phone, PC and wearable makers, and app developers who need personalization without sending history to a server.",
+            "ja": "スマホ・PC・ウェアラブルのメーカー。履歴をサーバーに送らずにパーソナライズしたいアプリ開発者。"
+          },
+          "market": {
+            "en": "On-device AI features in consumer hardware. Very large device base; the paying customer is the device maker.",
+            "ja": "消費者向け端末に載るAI機能。端末の台数はとても多い。お金を払うのは端末メーカー。"
+          },
+          "why_now": {
+            "en": "The method was shown on 2-7B models, the size that fits on current devices, and it needs no gradient steps, so it can run locally.",
+            "ja": "この手法は、今の端末に載る2〜7Bのモデルで確かめられている。勾配計算が要らないので、端末の中で動かせる。"
+          },
+          "time_to_market": "1-3y",
+          "moat": {
+            "en": "Integration with a device maker's model and hardware. Hard for a small company to win without a partner.",
+            "ja": "端末メーカーのモデルやハードウェアとの統合。小さな会社が提携先なしで勝つのは難しい。"
+          }
+        }
+      ],
+      "scores": {
+        "market_size": 5,
+        "feasibility": 3,
+        "startup_fit": 4
+      },
+      "confidence": "medium",
+      "caveats": {
+        "en": "Results are on small open models and two benchmarks. The method needs access to model weights, so it does not work on closed API models. Safety and privacy of memory written into weights are not covered in the abstract.",
+        "ja": "結果は小さなオープンモデルと2つのベンチマークでのもの。モデルの重みに触れる必要があるので、APIでしか使えない非公開モデルでは使えない。重みに書き込まれた記憶の安全性やプライバシーは、要旨では扱われていない。"
+      }
+    },
+    {
+      "arxiv_id": "2611.20756",
+      "version": 1,
+      "title": "Genuine multipartite entanglement in ring-shaped Hubbard models",
+      "authors": [
+        "K. Shahzad",
+        "S. Pittalis",
+        "G. Goldoni",
+        "R. Di Felice",
+        "F. Troiani"
+      ],
+      "primary_category": "quant-ph",
+      "categories": [
+        "quant-ph",
+        "cond-mat.str-el"
+      ],
+      "published": "2026-11-16T09:05:12Z",
+      "abs_url": "https://arxiv.org/abs/2611.20756",
+      "pdf_url": "https://arxiv.org/pdf/2611.20756v1",
+      "fields": [
+        "quantum"
+      ],
+      "analyzed_at": "2026-11-17",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "A theoretical study of multipartite entanglement between electron spins in ring-shaped Hubbard models.",
+        "ja": "リング状のハバード模型で、電子のスピンどうしの多体エンタングルメントを調べた理論研究。"
+      },
+      "breakthrough": {
+        "en": "Shows that electron repulsion strengthens the entanglement, that it survives at low temperature, and that doping can even increase it.",
+        "ja": "電子どうしの反発がエンタングルメントを強めること、低温では保たれること、ドーピングでむしろ強まる場合があることを示した。"
+      },
+      "business_seeds": [],
+      "scores": {
+        "market_size": 1,
+        "feasibility": 1,
+        "startup_fit": 1
+      },
+      "confidence": "high",
+      "caveats": {
+        "en": "Basic theory. It may inform quantum-dot experiments one day, but there is no path to a product from this paper.",
+        "ja": "基礎的な理論。いつか量子ドットの実験の参考になる可能性はあるが、この論文から製品への道筋は見えない。"
+      }
+    },
+    {
+      "arxiv_id": "2611.20755",
+      "version": 1,
+      "title": "GPRM: Global Perspective Process Reward Model",
+      "authors": [
+        "Zifan Zhang",
+        "Zhengbo Jiao",
+        "Shaobo Wang",
+        "Jing Zhou",
+        "Guoyi Li",
+        "Jiayi Chen",
+        "Wei Wang",
+        "Bing Zhao",
+        "Cheng Fang",
+        "Xiaoxiao Xu",
+        "Hu Wei",
+        "Linfeng Zhang",
+        "Lin Qu"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-11-16T09:03:27Z",
+      "abs_url": "https://arxiv.org/abs/2611.20755",
+      "pdf_url": "https://arxiv.org/pdf/2611.20755v1",
+      "fields": [
+        "ai"
+      ],
+      "analyzed_at": "2026-11-17",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "GPRM: a process reward model that scores each step of an LLM's reasoning using the earlier steps, their scores, and the later steps.",
+        "ja": "GPRM:LLMの推論の各ステップを、前のステップとその評価、後ろのステップも見て採点するプロセス報酬モデル。"
+      },
+      "breakthrough": {
+        "en": "Beats strong baselines by 7.8 and 5.4 points on two step-evaluation benchmarks with less training data and smaller models, and finds agent errors better than a GPT-4.1 baseline on one benchmark.",
+        "ja": "ステップ評価の2つのベンチマークで、強い既存手法を7.8ポイントと5.4ポイント上回った。学習データもモデルも小さい。エージェントの誤り検出のベンチマークでは、GPT-4.1を使った基準を上回った。"
+      },
+      "business_seeds": [
+        {
+          "title": {
+            "en": "Step-level error detection for agent traces",
+            "ja": "エージェントの実行記録から、どのステップで間違えたかを見つけるツール"
+          },
+          "customer": {
+            "en": "Teams that operate LLM agents and need to find where a long run went wrong; LLM evaluation and observability platforms.",
+            "ja": "LLMエージェントを運用していて、長い実行のどこで間違えたかを知りたいチーム。LLMの評価・監視の基盤を提供する事業者。"
+          },
+          "market": {
+            "en": "LLM evaluation and observability tooling. Growing, but crowded with funded companies.",
+            "ja": "LLMの評価・監視ツール。伸びているが、資金のある競合が多い。"
+          },
+          "why_now": {
+            "en": "Agents run longer multi-step tasks, so finding the failing step by hand no longer scales.",
+            "ja": "エージェントがこなすタスクは長く、ステップも多くなっている。失敗したステップを人の目で探す方法は限界にきている。"
+          },
+          "time_to_market": "now",
+          "moat": {
+            "en": "Weak. The gain is a few benchmark points and the method can be reproduced; a moat would have to come from customers' own traces.",
+            "ja": "弱い。差はベンチマークで数ポイントで、手法は再現できる。参入障壁を作るなら、顧客自身の実行記録のデータから。"
+          }
+        }
+      ],
+      "scores": {
+        "market_size": 3,
+        "feasibility": 4,
+        "startup_fit": 2
+      },
+      "confidence": "medium",
+      "caveats": {
+        "en": "Because it looks at later steps, it suits reviewing finished or partially finished runs rather than stopping an error as it happens. Benchmark gains may not carry over to a customer's domain.",
+        "ja": "後ろのステップも見る方式なので、起きた瞬間に誤りを止めるより、終わった(または途中まで進んだ)実行の見直しに向く。ベンチマークでの差が、顧客の業務でも出るとは限らない。"
+      }
+    },
+    {
+      "arxiv_id": "2611.20754",
+      "version": 1,
+      "title": "Directionality of low-energy electron recoils in the CYGNO experiment",
+      "authors": [
+        "F. D. Amaro",
+        "E. Baracchini",
+        "L. Benussi",
+        "C. Capoccia",
+        "M. Caponero",
+        "L. G. M. de Carvalho",
+        "G. Cavoto",
+        "I. A. Costa",
+        "M. D'Astolfo",
+        "G. D'Imperio",
+        "G. Dho",
+        "E. Di Marco",
+        "J. M. F. dos Santos",
+        "D. Fiorina",
+        "F. Iacoangeli",
+        "H. P. Lima",
+        "G. Maccarrone",
+        "P. Meloni",
+        "A. Messina",
+        "C. M. B. Monteiro",
+        "R. A. Nobrega",
+        "G. M. Oppedisano",
+        "I. F. Pains",
+        "E. Paoletti",
+        "F. Petrucci",
+        "S. Piacentini",
+        "D. Pierluigi",
+        "D. Pinci",
+        "A. Russo",
+        "G. Saviano",
+        "F. F. Scamporlino",
+        "R. C. Sousa",
+        "N. J. C. Spooner",
+        "R. Tesauro",
+        "S. Tomassini",
+        "S. Torelli"
+      ],
+      "primary_category": "physics.ins-det",
+      "categories": [
+        "physics.ins-det",
+        "astro-ph.IM",
+        "hep-ex"
+      ],
+      "published": "2026-11-16T09:02:26Z",
+      "abs_url": "https://arxiv.org/abs/2611.20754",
+      "pdf_url": "https://arxiv.org/pdf/2611.20754v1",
+      "fields": [
+        "space"
+      ],
+      "analyzed_at": "2026-11-17",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "An algorithm that reconstructs the initial direction of low-energy electron tracks in the CYGNO gas detector, which is read out with a scientific camera.",
+        "ja": "科学用カメラで読み出すガス検出器CYGNOで、低エネルギーの電子の飛跡から最初の向きを復元するアルゴリズム。"
+      },
+      "breakthrough": {
+        "en": "In simulation, angular resolution improves from about 20 degrees near 20 keV to about 12 degrees at 60 keV for favourable track orientations, a step toward telling solar neutrinos from background.",
+        "ja": "シミュレーションでは、条件の良い向きの飛跡について、角度の分解能が20keV付近の約20度から60keVで約12度まで良くなった。太陽ニュートリノと背景を区別するための一歩。"
+      },
+      "business_seeds": [],
+      "scores": {
+        "market_size": 1,
+        "feasibility": 1,
+        "startup_fit": 1
+      },
+      "confidence": "high",
+      "caveats": {
+        "en": "Fundamental physics instrumentation, characterized by simulation. Camera-read gas detectors might find uses in radiation imaging, but the paper does not show that.",
+        "ja": "基礎物理のための測定器の研究で、評価はシミュレーションによる。カメラで読み出すガス検出器は放射線の画像化に使える可能性があるが、この論文では示されていない。"
+      }
+    },
+    {
+      "arxiv_id": "2611.20752",
+      "version": 1,
+      "title": "Who Benefits from Telemonitoring? Uplift Modelling of a Nationwide Home Blood Pressure Monitoring Programme",
+      "authors": [
+        "Connie Kou"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-11-16T09:01:44Z",
+      "abs_url": "https://arxiv.org/abs/2611.20752",
+      "pdf_url": "https://arxiv.org/pdf/2611.20752v1",
+      "fields": [
+        "ai"
+      ],
+      "analyzed_at": "2026-11-17",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "Uplift modelling on a nationwide home blood-pressure telemonitoring programme in Singapore (16,694 patients) to estimate which patients benefit most from enrolment.",
+        "ja": "シンガポールの全国規模の家庭血圧テレモニタリング事業(16,694人)のデータで、参加によって最も効果が出る患者を推定するアップリフト・モデリング。"
+      },
+      "breakthrough": {
+        "en": "The programme improved 6-month blood-pressure control by 5 points overall and 12 points for patients uncontrolled at baseline. The benefit was concentrated in an identifiable group, and a simple hand-written rule matched the learned models.",
+        "ja": "事業への参加で、6ヶ月後に血圧がコントロールできている人の割合が全体で5ポイント、開始時にコントロール不良だった患者では12ポイント上がった。効果は特定できる集団に集中していて、単純な手書きのルールでも学習モデルと同じくらい当てられた。"
+      },
+      "business_seeds": [
+        {
+          "title": {
+            "en": "Enrolment targeting for remote patient monitoring programmes",
+            "ja": "遠隔患者モニタリング事業の「誰を参加させるか」を決めるツール"
+          },
+          "customer": {
+            "en": "Health systems, insurers and national programmes that fund telemonitoring, and remote-monitoring vendors that need to show outcomes.",
+            "ja": "テレモニタリングの費用を出す医療機関・保険者・国の事業。成果を示す必要がある遠隔モニタリングの事業者。"
+          },
+          "market": {
+            "en": "Remote patient monitoring for chronic disease. Large and growing with ageing populations; care-team capacity, not devices, is the limit.",
+            "ja": "慢性疾患の遠隔患者モニタリング。高齢化とともに大きく伸びている。足りないのは機器ではなく、対応する医療チームの人手。"
+          },
+          "why_now": {
+            "en": "Programmes are moving from pilots to national scale, so deciding who to enrol with limited staff becomes a budget question.",
+            "ja": "事業が試験導入から全国規模へ移っている。限られた人手で誰を参加させるかが、予算の問題になってきた。"
+          },
+          "time_to_market": "1-3y",
+          "moat": {
+            "en": "Access to outcome data and integration with each health system. The model itself is not a moat: a simple rule performed as well.",
+            "ja": "成果データを使えることと、各医療機関のシステムとの統合。モデル自体は参入障壁にならない。単純なルールでも同じ性能が出たため。"
+          }
+        }
+      ],
+      "scores": {
+        "market_size": 4,
+        "feasibility": 3,
+        "startup_fit": 3
+      },
+      "confidence": "medium",
+      "caveats": {
+        "en": "Retrospective observational data from one country; the authors call the patient profile hypothesis-generating. Selling into health systems is slow, and clinical use needs prospective validation.",
+        "ja": "1つの国の、後ろ向きの観察データ。著者自身も、効果が出やすい患者像は仮説の段階だとしている。医療機関への販売は時間がかかり、臨床で使うには前向きの検証が必要。"
+      }
+    },
+    {
+      "arxiv_id": "2611.20736",
+      "version": 1,
+      "title": "GainCtrl: Predicting Remaining Gains for Efficient LLM Agent Execution",
+      "authors": [
+        "Kangwen Zhao",
+        "Jianfeng Cai",
+        "Ruopei Sun",
+        "Mingxiao Feng",
+        "Peng Zhang",
+        "Wengang Zhou",
+        "Houqiang Li"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-11-16T08:40:29Z",
+      "abs_url": "https://arxiv.org/abs/2611.20736",
+      "pdf_url": "https://arxiv.org/pdf/2611.20736v1",
+      "fields": [
+        "ai"
+      ],
+      "analyzed_at": "2026-11-17",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "GainCtrl: a lightweight CPU predictor that watches an LLM agent's interaction history and decides when further attempts are unlikely to improve the best result.",
+        "ja": "GainCtrl:LLMエージェントのやり取りの履歴を見て、これ以上試しても最良の結果が良くならないと判断したら止める、CPUで動く軽い予測器。"
+      },
+      "breakthrough": {
+        "en": "Cuts token use at matched task quality across three environments and three LLMs, with millisecond latency and no access to model internals.",
+        "ja": "3つの環境と3つのLLMで、同じ品質を保ったままトークンの消費を減らした。判定はミリ秒単位で、モデルの内部には触れない。"
+      },
+      "business_seeds": [
+        {
+          "title": {
+            "en": "Cost controller for LLM agents",
+            "ja": "LLMエージェントの費用を抑えるコントローラー"
+          },
+          "customer": {
+            "en": "Teams with large agent token bills: coding agents, research agents, automated support. Also agent frameworks and LLM gateways that want it as a feature.",
+            "ja": "エージェントのトークン費用が大きいチーム(コーディング、調査、自動サポートなど)。機能として組み込みたいエージェント用フレームワークやLLMゲートウェイ。"
+          },
+          "market": {
+            "en": "Optimization of LLM inference spend. Grows with agent usage; value is a share of the money saved.",
+            "ja": "LLMの推論費用の最適化。エージェントの利用とともに伸びる。得られるのは、節約できた金額の一部。"
+          },
+          "why_now": {
+            "en": "Retries and best-of-N runs multiply agent costs, and the controller works from outside the model, so it can be added to any provider.",
+            "ja": "やり直しや「N回試して一番良いものを選ぶ」方式で、エージェントの費用は何倍にもなる。モデルの外側で動くので、どの提供元にも後付けできる。"
+          },
+          "time_to_market": "now",
+          "moat": {
+            "en": "Weak. Predictors calibrated on a customer's own workloads help, but frameworks and gateways can build the same feature.",
+            "ja": "弱い。顧客ごとの利用データで調整した予測器は強みになるが、フレームワークやゲートウェイが同じ機能を自前で作れる。"
+          }
+        }
+      ],
+      "scores": {
+        "market_size": 3,
+        "feasibility": 5,
+        "startup_fit": 3
+      },
+      "confidence": "medium",
+      "caveats": {
+        "en": "Evaluated by replaying recorded trajectories in three environments, not in live production. It needs a task score to predict gains, which many real tasks lack.",
+        "ja": "評価は3つの環境で記録済みの実行を再生したもので、本番環境ではない。伸びしろを予測するにはタスクの点数が必要だが、実際の仕事には点数がないものも多い。"
+      }
+    },
+    {
+      "arxiv_id": "2611.20667",
+      "version": 1,
+      "title": "Near-synchronous multiphoton quantum interference",
+      "authors": [
+        "Xiangshuai Dong",
+        "Tingzeng Wu"
+      ],
+      "primary_category": "quant-ph",
+      "categories": [
+        "quant-ph",
+        "math.CO"
+      ],
+      "published": "2026-11-16T07:29:48Z",
+      "abs_url": "https://arxiv.org/abs/2611.20667",
+      "pdf_url": "https://arxiv.org/pdf/2611.20667v1",
+      "fields": [
+        "quantum"
+      ],
+      "analyzed_at": "2026-11-17",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "A theory of how interference between several single photons degrades when they arrive almost, but not exactly, at the same time.",
+        "ja": "複数の単一光子が「ほぼ同時だが、完全には同時でない」タイミングで届いたとき、干渉がどう弱まるかを扱う理論。"
+      },
+      "breakthrough": {
+        "en": "Gives an error bound on the full output distribution that links photon spectral width, timing precision and the deviation in interference statistics, for any optical network.",
+        "ja": "光子のスペクトル幅、タイミングの精度、干渉の統計のずれを結びつける誤差の上限を、出力分布全体に対して示した。どんな光回路にも当てはまる。"
+      },
+      "business_seeds": [],
+      "scores": {
+        "market_size": 1,
+        "feasibility": 1,
+        "startup_fit": 1
+      },
+      "confidence": "medium",
+      "caveats": {
+        "en": "Theory only. It could help photonic quantum computing teams set timing tolerances for their sources, but that is an internal engineering input, not a product.",
+        "ja": "理論だけの研究。光量子コンピュータの開発チームが、光源に求めるタイミングの許容範囲を決める助けにはなりうる。ただしそれは社内の設計の材料で、製品にはならない。"
+      }
+    },
+    {
+      "arxiv_id": "2611.20654",
+      "version": 1,
+      "title": "Magnetic Power in Binaries: From Coalescing Binary Neutron Stars to Close-in Exoplanetary Systems",
+      "authors": [
+        "Dong Lai",
+        "Tu Guo",
+        "Nicholas Corso"
+      ],
+      "primary_category": "astro-ph.HE",
+      "categories": [
+        "astro-ph.HE",
+        "astro-ph.EP",
+        "astro-ph.SR"
+      ],
+      "published": "2026-11-16T07:10:38Z",
+      "abs_url": "https://arxiv.org/abs/2611.20654",
+      "pdf_url": "https://arxiv.org/pdf/2611.20654v1",
+      "fields": [
+        "space"
+      ],
+      "analyzed_at": "2026-11-17",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "A theoretical model that treats two magnetized bodies in orbit as an electric circuit powered by their orbital motion.",
+        "ja": "磁場を持つ2つの天体が互いを回る系を、軌道運動を動力とする電気回路とみなす理論モデル。"
+      },
+      "breakthrough": {
+        "en": "Gives formulas for the average and episodic magnetic power, predicting flares before neutron-star mergers and orbit-linked radio emission from exoplanet systems.",
+        "ja": "磁気的なエネルギーの平均値と、一時的に放出される量の式を示した。中性子星の合体前のフレアや、系外惑星系からの軌道に連動した電波放射を予測する。"
+      },
+      "business_seeds": [],
+      "scores": {
+        "market_size": 1,
+        "feasibility": 1,
+        "startup_fit": 1
+      },
+      "confidence": "high",
+      "caveats": {
+        "en": "Astrophysics theory. The value is scientific: it guides what telescopes should look for.",
+        "ja": "天体物理の理論。価値は科学的なもので、望遠鏡で何を探すべきかの指針になる。"
+      }
+    },
+    {
+      "arxiv_id": "2611.20636",
+      "version": 1,
+      "title": "Ca II IRT activity indices from $Gaia$ spectroscopy: a baseline method for photospheric contribution estimates",
+      "authors": [
+        "Wang Song",
+        "Li Tanda",
+        "Han Henggeng",
+        "Li Xue",
+        "Liu Jifeng"
+      ],
+      "primary_category": "astro-ph.SR",
+      "categories": [
+        "astro-ph.SR",
+        "astro-ph.GA",
+        "astro-ph.IM"
+      ],
+      "published": "2026-11-16T06:57:08Z",
+      "abs_url": "https://arxiv.org/abs/2611.20636",
+      "pdf_url": "https://arxiv.org/pdf/2611.20636v1",
+      "fields": [
+        "space"
+      ],
+      "analyzed_at": "2026-11-17",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "A method to measure stellar magnetic activity from Gaia spectra by using quiet stars as the baseline instead of model templates.",
+        "ja": "Gaia衛星のスペクトルから、恒星の磁気活動を測る手法。モデルの型の代わりに、活動の少ない恒星を基準に使う。"
+      },
+      "breakthrough": {
+        "en": "Yields valid activity measurements for far more dwarf stars than the standard method and can scale to tens of millions of stars in the next Gaia data release.",
+        "ja": "標準の手法よりずっと多くの矮星で、有効な活動の測定値が得られる。次のGaiaのデータ公開で、数千万個の恒星に適用できる。"
+      },
+      "business_seeds": [],
+      "scores": {
+        "market_size": 1,
+        "feasibility": 1,
+        "startup_fit": 1
+      },
+      "confidence": "high",
+      "caveats": {
+        "en": "A data-analysis method for astronomy catalogues. No commercial customer.",
+        "ja": "天文カタログのためのデータ解析手法。商用の顧客はいない。"
+      }
+    },
+    {
+      "arxiv_id": "2611.20622",
+      "version": 1,
+      "title": "Observable Spectral Framework for Noisy Amplitude Amplification: Stopping Stability and Correction",
+      "authors": [
+        "Ge Zhong",
+        "Charith Jayasekara",
+        "Nisal De Silva",
+        "Muhammad Usman",
+        "Muhammad Aamir Cheema",
+        "Chetan Arora"
+      ],
+      "primary_category": "quant-ph",
+      "categories": [
+        "quant-ph",
+        "cs.ET"
+      ],
+      "published": "2026-11-16T06:44:59Z",
+      "abs_url": "https://arxiv.org/abs/2611.20622",
+      "pdf_url": "https://arxiv.org/pdf/2611.20622v1",
+      "fields": [
+        "quantum"
+      ],
+      "analyzed_at": "2026-11-17",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "A framework for deciding when to stop amplitude amplification, the core step of Grover search, on a noisy quantum computer.",
+        "ja": "ノイズのある量子コンピュータで、振幅増幅(グローバー探索の中心となる操作)をどこで止めるかを決めるための枠組み。"
+      },
+      "breakthrough": {
+        "en": "Derives how noise shifts the best stopping point without modelling each noise channel separately, and gives checks for when to keep the ideal depth or recalibrate.",
+        "ja": "ノイズの種類ごとにモデルを作らなくても、最適な止めどころがノイズでどうずれるかを導いた。理想の深さのままでよいか、調整し直すべきかを判定する基準も示した。"
+      },
+      "business_seeds": [],
+      "scores": {
+        "market_size": 1,
+        "feasibility": 1,
+        "startup_fit": 1
+      },
+      "confidence": "medium",
+      "caveats": {
+        "en": "The demonstrated gain is small (success probability 0.595 to 0.626 on a 64-element search) and Grover search has no commercial use on today's hardware. At most a feature inside a quantum compiler.",
+        "ja": "示された改善は小さい(64要素の探索で、成功確率が0.595から0.626)。グローバー探索は、今のハードウェアでは商用の使い道がない。せいぜい量子コンパイラの中の1機能。"
+      }
+    },
+    {
+      "arxiv_id": "2611.20617",
+      "version": 1,
+      "title": "Complex Interplay between Outer Disk Dynamics and Inner Water Reservoir",
+      "authors": [
+        "Feng Long",
+        "Ilaria Pascucci",
+        "Paola Pinilla",
+        "Andrea Banzatti",
+        "Adrien Houge",
+        "Sean M. Andrews",
+        "Doug Johnstone",
+        "Gregory J. Herczeg",
+        "Joan Najita",
+        "Klaus M. Pontoppidan",
+        "Joe Williams",
+        "Ke Zhang",
+        "Geoffrey A. Blake",
+        "Maria Jose Colmenares",
+        "Giovanni Rosotti",
+        "Enrico Ragusa",
+        "Colette Salyk",
+        "Chengyan Xie",
+        "Tayt Armitage",
+        "Xue-Ning Bai",
+        "Daniel Harsono",
+        "Till Kaeufer",
+        "Sebastiaan Krijt",
+        "Giuseppe Lodato",
+        "Yao Liu",
+        "Carlo F. Manara",
+        "Francois Menard",
+        "Mayank Narang",
+        "Miguel Vioque",
+        "David J. Wilner",
+        "the JDISCS Collaboration"
+      ],
+      "primary_category": "astro-ph.EP",
+      "categories": [
+        "astro-ph.EP"
+      ],
+      "published": "2026-11-16T06:40:17Z",
+      "abs_url": "https://arxiv.org/abs/2611.20617",
+      "pdf_url": "https://arxiv.org/pdf/2611.20617v1",
+      "fields": [
+        "space"
+      ],
+      "analyzed_at": "2026-11-17",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "A combined ALMA and JWST survey of 51 planet-forming disks that relates outer-disk structure to water in the inner disk.",
+        "ja": "惑星ができつつある円盤51個を、ALMAとJWSTで合わせて調べた観測。円盤の外側の構造と、内側の水との関係を見ている。"
+      },
+      "breakthrough": {
+        "en": "Finds no single outer-disk property that predicts inner-disk water; three compact, featureless disks show signs of icy pebbles drifting inward unimpeded.",
+        "ja": "内側の水の量を単独で予測できる外側の性質は見つからなかった。小さくて構造のない3つの円盤では、氷の粒が妨げられずに内側へ流れ込んでいる兆候があった。"
+      },
+      "business_seeds": [],
+      "scores": {
+        "market_size": 1,
+        "feasibility": 1,
+        "startup_fit": 1
+      },
+      "confidence": "high",
+      "caveats": {
+        "en": "Observational astronomy about how planets form. No commercial application.",
+        "ja": "惑星の形成についての観測天文学。商用の応用はない。"
+      }
+    },
+    {
+      "arxiv_id": "2611.20613",
+      "version": 1,
+      "title": "Noise-Aware Testing of NISQ Quantum Programs: Self-Baseline Oracle with a Controlled False-Positive Rate",
+      "authors": [
+        "Mir Mohammad Yousuf",
+        "Shabir Ahmad Sofi"
+      ],
+      "primary_category": "quant-ph",
+      "categories": [
+        "quant-ph",
+        "cs.SE"
+      ],
+      "published": "2026-11-16T06:38:12Z",
+      "abs_url": "https://arxiv.org/abs/2611.20613",
+      "pdf_url": "https://arxiv.org/pdf/2611.20613v1",
+      "fields": [
+        "quantum"
+      ],
+      "analyzed_at": "2026-11-17",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "A testing framework for quantum programs on noisy devices that compares each run with repeated runs of a trusted reference on the same hardware, so the false-alarm rate is fixed in advance.",
+        "ja": "ノイズのある量子デバイス上のプログラムをテストする枠組み。同じハードウェアで信頼できる参照プログラムを繰り返し実行した結果と比べることで、誤って不合格にする確率をあらかじめ決めておける。"
+      },
+      "breakthrough": {
+        "en": "In simulation the false-positive rate is 0.11% against 36-74% for fixed thresholds. On an IBM Heron device it rejected none of 82 correct runs and caught 120 of 121 faults in about 14 minutes of machine time.",
+        "ja": "シミュレーションでは、誤って不合格にする割合が0.11%だった(固定のしきい値では36〜74%)。IBM Heronの実機では、正しい実行82件を1件も不合格にせず、不具合121件のうち120件を見つけた。使った実機の時間は約14分。"
+      },
+      "business_seeds": [
+        {
+          "title": {
+            "en": "Test and CI toolchain for quantum software",
+            "ja": "量子ソフトウェア向けの、テストと自動チェックのツール"
+          },
+          "customer": {
+            "en": "Quantum software teams, hardware vendors and quantum cloud platforms that need to tell program bugs from hardware noise.",
+            "ja": "プログラムの不具合とハードウェアのノイズを見分ける必要がある、量子ソフトウェアの開発チーム、ハードウェアの事業者、量子クラウドの事業者。"
+          },
+          "market": {
+            "en": "Quantum software tooling. Small today because few teams run production workloads; it grows with the hardware.",
+            "ja": "量子ソフトウェアの開発ツール。本番で動かしているチームがまだ少ないので、今は小さい。ハードウェアの進歩とともに伸びる。"
+          },
+          "why_now": {
+            "en": "More teams run on real devices, machine time is expensive, and false alarms waste it.",
+            "ja": "実機で動かすチームが増えている。実機の時間は高く、誤った不合格はその時間を無駄にする。"
+          },
+          "time_to_market": "1-3y",
+          "moat": {
+            "en": "Integration with vendor toolkits and device calibration data. Hardware vendors may bundle their own testing tools.",
+            "ja": "各社の開発キットや、デバイスの校正データとの統合。ハードウェアの事業者が自社のテストツールを標準で付ける可能性がある。"
+          }
+        }
+      ],
+      "scores": {
+        "market_size": 2,
+        "feasibility": 4,
+        "startup_fit": 3
+      },
+      "confidence": "medium",
+      "caveats": {
+        "en": "Designed for today's noisy devices; error-corrected machines change the problem. Hardware results come from one device.",
+        "ja": "今のノイズのあるデバイス向けの設計。誤り訂正のできる量子コンピュータでは、問題の形が変わる。実機での結果は1台のデバイスのもの。"
+      }
+    },
+    {
+      "arxiv_id": "2611.20610",
+      "version": 1,
+      "title": "Quantum Sensor of Mechanical Vibrations",
+      "authors": [
+        "Mu Young Kim",
+        "H. C. J. Gan",
+        "Nigel Benjamin Lee Junsheng",
+        "Dzmitry Matsukevich"
+      ],
+      "primary_category": "quant-ph",
+      "categories": [
+        "quant-ph",
+        "physics.atom-ph"
+      ],
+      "published": "2026-11-16T06:33:58Z",
+      "abs_url": "https://arxiv.org/abs/2611.20610",
+      "pdf_url": "https://arxiv.org/pdf/2611.20610v1",
+      "fields": [
+        "quantum"
+      ],
+      "analyzed_at": "2026-11-17",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "A single trapped ion used as a sensor: its motion picks up mechanical vibrations of the trap structure, read out through quantum control of the ion.",
+        "ja": "捕捉したイオン1個をセンサーとして使う。イオンの動きがトラップの構造の機械的な振動を拾い、イオンの量子制御を通じて読み出す。"
+      },
+      "breakthrough": {
+        "en": "Detects trap vibrations with amplitudes as small as 0.6 picometres, driven by an ultrasonic transducer outside the vacuum chamber.",
+        "ja": "真空容器の外に付けた超音波振動子で起こした、振幅0.6ピコメートルという小さなトラップの振動を検出した。"
+      },
+      "business_seeds": [
+        {
+          "title": {
+            "en": "Built-in vibration diagnostics for ion-trap quantum computers",
+            "ja": "イオントラップ型量子コンピュータに組み込む、振動の診断機能"
+          },
+          "customer": {
+            "en": "Companies and labs building trapped-ion quantum computers and optical clocks, where vibration limits gate quality.",
+            "ja": "イオントラップ型の量子コンピュータや光時計を作っている企業と研究機関。振動がゲート操作の精度を下げる要因になっている。"
+          },
+          "market": {
+            "en": "A small number of hardware builders. A niche inside quantum hardware engineering.",
+            "ja": "ハードウェアを作っている少数の組織。量子ハードウェア開発の中のニッチな市場。"
+          },
+          "why_now": {
+            "en": "Trapped-ion systems are scaling up and moving out of labs, so mechanical noise becomes an engineering problem to measure in place.",
+            "ja": "イオントラップ型の装置が大型化し、研究室の外に出始めている。機械的なノイズを、その場で測る必要がある技術課題になってきた。"
+          },
+          "time_to_market": "3-10y",
+          "moat": {
+            "en": "Deep hardware expertise. But the customers are the same experts, and they can do this in-house.",
+            "ja": "ハードウェアの深い専門知識。ただし、顧客自身がその専門家なので、自前でできてしまう。"
+          }
+        }
+      ],
+      "scores": {
+        "market_size": 2,
+        "feasibility": 2,
+        "startup_fit": 2
+      },
+      "confidence": "low",
+      "caveats": {
+        "en": "A proof of principle. As a general vibration sensor it needs a vacuum system and lasers, and optical interferometers already reach picometre sensitivity far more cheaply.",
+        "ja": "原理の実証の段階。汎用の振動センサーとして使うには真空装置とレーザーが必要になる。光学干渉計なら、ピコメートルの感度をはるかに安く実現できる。"
+      }
+    },
+    {
+      "arxiv_id": "2611.20520",
+      "version": 1,
+      "title": "Towards Inter-satellite Laser Metrology for Formation Flying Interferometry",
+      "authors": [
+        "A. O. Chan",
+        "J. E. Debs",
+        "M. J. Ireland",
+        "C. P. Bandutunga"
+      ],
+      "primary_category": "astro-ph.IM",
+      "categories": [
+        "astro-ph.IM"
+      ],
+      "published": "2026-11-16T04:45:40Z",
+      "abs_url": "https://arxiv.org/abs/2611.20520",
+      "pdf_url": "https://arxiv.org/pdf/2611.20520v1",
+      "fields": [
+        "space"
+      ],
+      "analyzed_at": "2026-11-17",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "A prototype laser metrology system that measures the distance between satellites flying in formation, combining three interferometric techniques from coarse ranging to sub-nanometre readout.",
+        "ja": "編隊飛行する衛星どうしの距離を測るレーザー計測システムの試作機。粗い測距からナノメートル以下の読み出しまで、3つの干渉計測の手法を組み合わせる。"
+      },
+      "breakthrough": {
+        "en": "The readout electronics reach a noise floor below 20 pm over 10 s, 28 times better than the 560 pm requirement of the planned formation-flying interferometer demonstrator.",
+        "ja": "読み出しの電子回路で、10秒間のノイズが20pm未満になった。計画中の編隊飛行干渉計の実証機が求める560pmより28倍良い。"
+      },
+      "business_seeds": [
+        {
+          "title": {
+            "en": "Precision laser ranging units for formation-flying satellites",
+            "ja": "編隊飛行する衛星向けの、高精度レーザー測距ユニット"
+          },
+          "customer": {
+            "en": "Space agencies and prime contractors building formation-flying science missions; later, companies flying distributed-aperture or multi-satellite radar constellations.",
+            "ja": "編隊飛行の科学ミッションを作る宇宙機関と主契約企業。将来は、複数の衛星で1つの大きなアンテナや望遠鏡を作る事業者。"
+          },
+          "market": {
+            "en": "Satellite subsystems for formation flying. A niche today, funded mainly by agency missions; it grows if distributed apertures become commercial.",
+            "ja": "編隊飛行のための衛星サブシステム。今は小さな市場で、主に宇宙機関のミッションが資金源。分散型のアンテナや望遠鏡が商用化されれば伸びる。"
+          },
+          "why_now": {
+            "en": "Small satellites and cheaper launch make multi-satellite instruments practical, and exoplanet imaging is a stated priority of US and European science plans.",
+            "ja": "小型衛星と打ち上げ費用の低下で、複数の衛星を使う観測機器が現実的になった。系外惑星の撮像は、米国と欧州の科学計画で優先課題に挙げられている。"
+          },
+          "time_to_market": "3-10y",
+          "moat": {
+            "en": "Flight heritage and optical engineering know-how. Strong once earned, but it takes years and a launch to earn.",
+            "ja": "宇宙での動作実績と、光学設計のノウハウ。手に入れば強いが、手に入れるには数年と実際の打ち上げが必要。"
+          }
+        }
+      ],
+      "scores": {
+        "market_size": 3,
+        "feasibility": 2,
+        "startup_fit": 3
+      },
+      "confidence": "low",
+      "caveats": {
+        "en": "A lab prototype. The headline number is the electronics noise floor; the full optical measurement in air is still limited by environmental fluctuations. Space qualification is not addressed.",
+        "ja": "実験室の試作機。目立つ数字は電子回路のノイズの下限で、空気中での光学測定全体は、まだ環境のゆらぎに制限されている。宇宙で使うための認定試験は扱われていない。"
+      }
+    }
+  ]
+}
