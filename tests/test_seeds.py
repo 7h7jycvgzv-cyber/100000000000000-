@@ -137,6 +137,30 @@ class MergeTest(unittest.TestCase):
             seeds.merge({"papers": [make_paper()]}, make_analysis(entry))
 
 
+class RemoveTest(unittest.TestCase):
+    def setUp(self):
+        papers = {"papers": [make_paper("a"), make_paper("b", published="2026-01-03T00:00:00Z")]}
+        self.doc = seeds.merge(papers, make_analysis(make_entry("a"), make_entry("b")))
+
+    def test_removes_papers(self):
+        result = seeds.remove(self.doc, ["a"])
+        self.assertEqual([p["arxiv_id"] for p in result["papers"]], ["b"])
+        self.assertEqual(result["count"], 1)
+
+    def test_unknown_id_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, "not in seeds.json: zzz"):
+            seeds.remove(self.doc, ["a", "zzz"])
+
+    def test_cli_remove(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "seeds.json"
+            path.write_text(json.dumps(self.doc), encoding="utf-8")
+            with mock.patch("builtins.print"):
+                self.assertEqual(cli.main(["remove", "b", "--seeds", str(path)]), 0)
+                self.assertEqual(cli.main(["remove", "nope", "--seeds", str(path)]), 1)
+            self.assertEqual(json.loads(path.read_text(encoding="utf-8"))["count"], 1)
+
+
 class PendingTest(unittest.TestCase):
     def test_lists_unanalyzed_and_new_versions(self):
         papers = {"papers": [make_paper("a", 1), make_paper("b", 2), make_paper("c", 1)]}

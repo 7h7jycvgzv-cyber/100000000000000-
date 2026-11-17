@@ -36,7 +36,7 @@ data/
 seedradar/
   arxiv.py             取得: URL組み立て、Atomフィードの解析、リトライ、分野の定義
   seeds.py             分析の検証、seeds.json への統合、未分析の論文の一覧
-  cli.py               コマンド: fetch / pending / validate / merge
+  cli.py               コマンド: fetch / pending / validate / merge / remove
   prompts/update.md    更新の手順書(分析の基準と出力の形)
 .claude/commands/seed-radar.md   Claude Code の /seed-radar コマンド
 tests/                 テスト(ネットワークに依存しない)
@@ -66,15 +66,16 @@ python -m seedradar fetch                  # 各分野5本(既定)
 python -m seedradar fetch --fields quantum ai --max 50
 ```
 
-### 分野とarXivカテゴリ
+### 分野とarXivの検索条件
 
-| キー | 分野 | カテゴリ |
-|---|---|---|
-| `space` | 宇宙開発 / Space & Astrophysics | `astro-ph.EP` `astro-ph.IM` `physics.space-ph` |
-| `quantum` | 量子計算 / Quantum Computing | `quant-ph` |
-| `ai` | AI / Artificial Intelligence | `cs.AI` `cs.LG` `cs.CL` |
+| キー | 分野 | カテゴリ | キーワード |
+|---|---|---|---|
+| `space` | 宇宙開発 / Space Technology | `astro-ph.IM` `physics.space-ph` `eess.SP` `eess.SY` `eess.IV` `cs.RO` `cs.NI` `cs.CV` | 要旨に次のどれかを含む: spacecraft, cubesat, satellite constellation, earth observation, remote sensing, on-orbit, in-orbit, space debris, low earth orbit, inter-satellite, satellite communication, satellite imagery |
+| `quantum` | 量子計算 / Quantum Computing | `quant-ph` | なし |
+| `ai` | AI / Artificial Intelligence | `cs.AI` `cs.LG` `cs.CL` | なし |
 
-`space` は、事業に近い3カテゴリ(惑星科学、観測機器・手法、宇宙物理)に絞っている。宇宙論や銀河などを足すときは `seedradar/arxiv.py` の `FIELDS` を変える。
+`space` は、カテゴリだけで取ると基礎的な天文学に偏る。そのため、工学寄りのカテゴリ(信号処理、制御、画像、ロボット、通信、画像認識、観測機器)の中から、要旨に衛星・宇宙機のキーワードを含む論文を取る。
+検索式は `(cat:A OR cat:B ...) AND (abs:x OR abs:"y z" ...)`。条件は `seedradar/arxiv.py` の `FIELDS` で変える。
 
 ### 出力(`papers.json`)
 
@@ -127,6 +128,7 @@ python -m seedradar fetch --fields quantum ai --max 50
   - 同じ論文をもう一度分析したら、新しい分析で置き換える
   - `papers.json` にない論文や、版(version)が違う分析は拒否する
   - 公開用のデータには要旨を入れない(画面から arXiv にリンクする)
+- `remove`: 公開用のデータから論文を外す(`python -m seedradar remove ID...`)。分野の条件を変えて、対象外になった論文を外すときに使う
 - `seeds.json` は過去の分をすべて持つ。新しい順に並ぶ
 
 ## 4. 公開(`index.html`)
@@ -135,6 +137,8 @@ python -m seedradar fetch --fields quantum ai --max 50
 - 分野の絞り込み、「事業の種がある論文だけ」の絞り込み
 - 並べ替え: 合計スコア、市場規模、実現性、起業向き、新しい順
 - 各論文に、技術の要約、事業の種(顧客・市場・なぜ今か・参入障壁・市場に出るまで)、注意点、確信度、arXiv へのリンク
+- **Startup Brief のコピー**: 事業の種がある論文の「詳細」から、企画メモ(Markdown)を表示中の言語でクリップボードにコピーする。コピーできない環境では、文章を選択できる欄を出す
+- **Daily Alert のウェイトリスト**: 「Get Daily High-Score Seeds」ボタン。今は GitHub の Issue 作成画面(題名と本文を入力済み)を開く。`index.html` の `WAITLIST_FORM_URL` に Google フォームなどのURLを入れると、そちらに切り替わる。登録の数が、有料版の需要の目安になる
 - 明るい画面と暗い画面の両方に対応。スマホの幅でも崩れない
 - フッターに、AIによる推定であることの注意書きと、arXiv への謝辞を載せている
 
