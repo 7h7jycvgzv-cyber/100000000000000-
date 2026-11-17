@@ -99,6 +99,109 @@ class ParseFeedTest(unittest.TestCase):
             arxiv.parse_feed(b"<html>not a feed")
 
 
+RSS_FIXTURE = (Path(__file__).parent / "fixtures" / "rss.xml").read_bytes()
+# A real response from rss.arxiv.org on a day when the feed had no items.
+RSS_EMPTY = (Path(__file__).parent / "fixtures" / "rss_empty.xml").read_bytes()
+
+
+def unavailable(url):
+    raise arxiv.ArxivUnavailable("HTTP Error 429")
+
+
+class RssTest(unittest.TestCase):
+    def test_rss_url_joins_categories(self):
+        self.assertEqual(arxiv.build_rss_url(("cs.RO", "eess.SP")), "https://rss.arxiv.org/rss/cs.RO+eess.SP")
+
+    def test_parses_items_and_skips_replacements(self):
+        papers = arxiv.parse_rss(RSS_FIXTURE)
+        self.assertEqual([p.arxiv_id for p in papers], ["2601.00011", "2601.00012", "2601.00014"])
+        first = papers[0]
+        self.assertEqual(first.version, 1)
+        self.assertEqual(first.title, "Onboard Planning for a Made-up Spacecraft")
+        self.assertEqual(first.summary, "We study a made-up spacecraft that plans its own manoeuvres.")
+        self.assertEqual(first.authors, ["Alice Example", "Bob Example"])
+        self.assertEqual(first.categories, ["cs.RO", "eess.SY"])
+        self.assertEqual(first.primary_category, "cs.RO")
+        self.assertEqual(first.published, "2026-01-02T05:00:00Z")
+        self.assertEqual(first.abs_url, "https://arxiv.org/abs/2601.00011")
+        self.assertEqual(first.pdf_url, "https://arxiv.org/pdf/2601.00011v1")
+        self.assertEqual(first.source, "rss")
+        self.assertEqual(papers[2].version, 2)
+
+    def test_empty_feed(self):
+        self.assertEqual(arxiv.parse_rss(RSS_EMPTY), [])
+
+    def test_invalid_rss_raises(self):
+        with self.assertRaises(arxiv.ArxivError):
+            arxiv.parse_rss(b"<rss>")
+
+    def test_keyword_match_is_whole_word_and_case_insensitive(self):
+        self.assertTrue(arxiv.matches_keywords("A new Spacecraft design", ("spacecraft",)))
+        self.assertTrue(arxiv.matches_keywords("uses Remote  sensing".replace("  ", " "), ("remote sensing",)))
+        self.assertFalse(arxiv.matches_keywords("spacecrafts-like", ("cubesat",)))
+        self.assertFalse(arxiv.matches_keywords("microcubesats", ("cubesat",)))
+        self.assertTrue(arxiv.matches_keywords("anything", ()))
+
+    def test_rss_fetch_applies_field_keywords(self):
+        papers = arxiv.fetch_field("space", 5, get=lambda url: RSS_FIXTURE, source="rss")
+        # The cell-biology paper mentions "satellite" but none of the space keywords.
+        self.assertEqual([p.arxiv_id for p in papers], ["2601.00011", "2601.00014"])
+        self.assertEqual(len(arxiv.fetch_field("space", 1, get=lambda url: RSS_FIXTURE, source="rss")), 1)
+
+
+class FallbackTest(unittest.TestCase):
+    def test_auto_falls_back_to_rss_when_api_is_unavailable(self):
+        urls = []
+
+        def get(url):
+            urls.append(url)
+            if url.startswith(arxiv.API_URL):
+                raise arxiv.ArxivUnavailable("HTTP Error 429")
+            return RSS_FIXTURE
+
+        papers = arxiv.fetch_field("space", 5, get=get)
+        self.assertEqual(len(urls), 2)
+        self.assertTrue(urls[1].startswith(arxiv.RSS_URL))
+        self.assertTrue(all(p.source == "rss" for p in papers))
+
+    def test_api_only_does_not_fall_back(self):
+        with self.assertRaises(arxiv.ArxivUnavailable):
+            arxiv.fetch_field("space", 5, get=unavailable, source="api")
+
+    def test_bad_query_error_does_not_fall_back(self):
+        def get(url):
+            raise arxiv.ArxivError("HTTP 400 from export.arxiv.org")
+
+        with self.assertRaisesRegex(arxiv.ArxivError, "HTTP 400"):
+            arxiv.fetch_field("space", 5, get=get)
+
+    def test_empty_rss_after_api_failure_is_an_error(self):
+        def get(url):
+            if url.startswith(arxiv.API_URL):
+                raise arxiv.ArxivUnavailable("HTTP Error 429")
+            return RSS_EMPTY
+
+        with self.assertRaisesRegex(arxiv.ArxivUnavailable, "no matching papers in today's feed"):
+            arxiv.fetch_field("space", 5, get=get)
+
+    def test_after_one_failure_the_run_stops_calling_the_api(self):
+        urls = []
+
+        def get(url):
+            urls.append(url)
+            if url.startswith(arxiv.API_URL):
+                raise arxiv.ArxivUnavailable("HTTP Error 429")
+            return RSS_FIXTURE
+
+        arxiv.fetch_all(["space", "quantum", "ai"], max_results=5, get=get, sleep=lambda s: None)
+        self.assertEqual(sum(u.startswith(arxiv.API_URL) for u in urls), 1)
+        self.assertEqual(sum(u.startswith(arxiv.RSS_URL) for u in urls), 3)
+
+    def test_unknown_source(self):
+        with self.assertRaises(ValueError):
+            arxiv.fetch_field("space", 5, get=lambda url: FIXTURE, source="mirror")
+
+
 class FetchAllTest(unittest.TestCase):
     def test_merges_papers_found_in_several_fields(self):
         urls, sleeps = [], []
@@ -126,6 +229,10 @@ class HttpGetTest(unittest.TestCase):
             with self.assertRaises(arxiv.ArxivError):
                 arxiv.http_get("https://example.invalid/")
         self.assertEqual(urlopen.call_count, arxiv.MAX_ATTEMPTS)
+        with mock.patch.object(arxiv.urllib.request, "urlopen", side_effect=error), \
+                mock.patch.object(arxiv.time, "sleep"):
+            with self.assertRaises(arxiv.ArxivUnavailable):
+                arxiv.http_get("https://example.invalid/")
         self.assertEqual(sleep.call_count, arxiv.MAX_ATTEMPTS - 1)
 
     def test_client_error_is_not_retried(self):
@@ -151,6 +258,20 @@ class CliTest(unittest.TestCase):
         self.assertEqual(payload["count"], 2)
         self.assertEqual(payload["fields"]["ai"]["label_ja"], "AI")
         self.assertEqual(payload["papers"][0]["arxiv_id"], "2601.00001")
+
+    def test_fetch_with_no_papers_keeps_the_existing_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "papers.json"
+            out.write_text("{}", encoding="utf-8")
+            with mock.patch.object(cli, "fetch_all", return_value=[]), mock.patch("builtins.print"):
+                self.assertEqual(cli.main(["fetch", "--source", "rss", "--out", str(out)]), 1)
+            self.assertEqual(out.read_text(encoding="utf-8"), "{}")
+
+    def test_fetch_passes_source(self):
+        with tempfile.TemporaryDirectory() as tmp, \
+                mock.patch.object(cli, "fetch_all", return_value=[]) as fetch_all, mock.patch("builtins.print"):
+            cli.main(["fetch", "--source", "rss", "--out", str(Path(tmp) / "p.json")])
+        self.assertEqual(fetch_all.call_args.kwargs["source"], "rss")
 
     def test_fetch_reports_api_failure(self):
         with mock.patch.object(cli, "fetch_all", side_effect=arxiv.ArxivError("down")), \
