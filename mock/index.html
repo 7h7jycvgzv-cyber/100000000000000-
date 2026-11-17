@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>前日の記録の要約(見本)</title>
+<style>
+  :root {
+    --bg: #F1F4F3;
+    --surface: #FFFFFF;
+    --ink: #17252B;
+    --muted: #5C6B70;
+    --line: #D5DCDB;
+    --accent: #0F6E78;
+    --accent-soft: #DCEEEF;
+    --warn: #9A5B00;
+    --warn-soft: #FBEFD6;
+    --mark: #FFE58A;
+    --sans: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0E1618; --surface: #162124; --ink: #E4ECEC; --muted: #93A3A6;
+      --line: #27363A; --accent: #6FC7D0; --accent-soft: #16343A;
+      --warn: #F0BC5E; --warn-soft: #3A2C10; --mark: #6B5600;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); font-size: 15px; line-height: 1.7;
+    padding: 16px 16px 56px;
+  }
+  main { max-width: 640px; margin: 0 auto; display: grid; gap: 20px; }
+  h1 { font-size: 20px; margin: 0; line-height: 1.4; }
+  h2 { font-size: 16px; margin: 0 0 10px; }
+  h3 { font-size: 14px; margin: 0 0 6px; }
+  p { margin: 0; }
+  .notice {
+    background: var(--warn-soft); color: var(--warn); border-radius: 8px;
+    padding: 10px 12px; font-size: 13px; font-weight: 700;
+  }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+  .patient { color: var(--muted); font-size: 13px; }
+  .changes { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+  .changes li { display: grid; gap: 4px; }
+  .changes b { font-weight: 700; }
+  .src { display: flex; flex-wrap: wrap; gap: 6px; }
+  .src a {
+    font-size: 12px; font-weight: 700; color: var(--accent); background: var(--accent-soft);
+    border-radius: 999px; padding: 2px 10px; text-decoration: none;
+  }
+  .src a:focus-visible, summary:focus-visible, .back:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .care { background: var(--warn-soft); border-radius: 8px; padding: 12px; display: grid; gap: 8px; }
+  .care h3 { color: var(--warn); }
+  .care ul, .same ul, .ask ol { margin: 0; padding-left: 1.3em; }
+  details.same { border-top: 1px solid var(--line); padding-top: 12px; }
+  summary { cursor: pointer; font-weight: 700; color: var(--muted); }
+  .summary-card { display: grid; gap: 16px; }
+  .shift { display: grid; gap: 10px; }
+  .shift + .shift { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .shift-head { font-size: 13px; color: var(--muted); font-weight: 700; }
+  .rec { border-left: 3px solid var(--line); padding: 4px 0 4px 12px; border-radius: 2px; }
+  .rec:target { background: var(--mark); border-left-color: var(--accent); }
+  .rec .time { font-weight: 700; font-size: 13px; }
+  .rec dl { margin: 4px 0 0; display: grid; grid-template-columns: 1.4em 1fr; gap: 2px 6px; }
+  .rec dt { font-weight: 700; color: var(--accent); }
+  .rec dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+  .back { display: inline-block; margin-top: 6px; font-size: 12px; color: var(--accent); }
+  .ask li { margin-bottom: 6px; }
+  footer { color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <p class="notice">これは見本です。患者さんも記録も、すべて架空です。要約は人が手で書いたもので、AIはまだ使っていません。</p>
+
+  <header>
+    <h1 id="top">前日の記録から「変化」だけを読む</h1>
+    <p class="patient">田中 一郎さん(架空)・78歳・肺炎・入院5日目</p>
+  </header>
+
+  <section class="card summary-card" aria-labelledby="sum-title">
+    <h2 id="sum-title">前日からの変化</h2>
+    <ul class="changes">
+      <li>
+        <span><b>夜間に2回</b>、ナースコールを押さずにベッドから降りようとした</span>
+        <span class="src"><a href="#r5">準夜 21:40</a><a href="#r6">深夜 1:15</a></span>
+      </li>
+      <li>
+        <span>夜間、<b>場所がわからない様子</b>あり。「せん妄の可能性」と記録</span>
+        <span class="src"><a href="#r6">深夜 1:15</a></span>
+      </li>
+      <li>
+        <span>酸素を <b>2L → 1L</b> に減量。夜間も SpO2 95〜96% で低下なし</span>
+        <span class="src"><a href="#r3">日勤 14:10</a><a href="#r7">深夜 6:00</a></span>
+      </li>
+      <li>
+        <span>昼食が <b>5割 → 8割</b> に増えた</span>
+        <span class="src"><a href="#r2">日勤 12:30</a></span>
+      </li>
+      <li>
+        <span><b>センサーマット</b>を新しく設置</span>
+        <span class="src"><a href="#r5">準夜 21:40</a></span>
+      </li>
+    </ul>
+
+    <div class="care">
+      <h3>今日 気をつけること</h3>
+      <ul>
+        <li>転倒のリスクが上がっている</li>
+        <li>せん妄について、医師への報告は「検討」のまま。報告済みかどうかの記録はない</li>
+      </ul>
+    </div>
+
+    <details class="same">
+      <summary>変わっていないこと</summary>
+      <ul>
+        <li>発熱なし(36.8〜37.2℃)</li>
+        <li>血圧・脈拍は大きな変化なし</li>
+        <li>湿性の咳と、黄色い痰が少量</li>
+        <li>抗菌薬の点滴は継続。刺入部に異常なし</li>
+      </ul>
+    </details>
+  </section>
+
+  <section class="card" aria-labelledby="rec-title">
+    <h2 id="rec-title">元の記録(24時間分)</h2>
+
+    <div class="shift">
+      <p class="shift-head">日勤・看護師A</p>
+      <div class="rec" id="r1">
+        <p class="time">10:00 #1 ガス交換障害</p>
+        <dl>
+          <dt>S</dt><dd>「昨日より息は楽です」</dd>
+          <dt>O</dt><dd>T 37.2℃、P 82回/分、BP 128/74mmHg、R 20回/分、SpO2 96%(O2 2L 経鼻)。両下肺野に軽度の水泡音あり。湿性咳嗽あり、黄色痰を少量自己喀出。</dd>
+          <dt>A</dt><dd>呼吸状態は改善傾向にある。</dd>
+          <dt>P</dt><dd>呼吸状態の観察を継続する。</dd>
+        </dl>
+        <a class="back" href="#top">要約にもどる</a>
+      </div>
+      <div class="rec" id="r2">
+        <p class="time">12:30 #2 栄養摂取</p>
+        <dl>
+          <dt>S</dt><dd>「今日はおいしく食べられた」</dd>
+          <dt>O</dt><dd>昼食8割摂取(前日は5割)。むせなし。日勤帯の飲水量600mL。</dd>
+          <dt>A</dt><dd>食欲は改善してきている。</dd>
+          <dt>P</dt><dd>食事摂取量の観察を継続する。</dd>
+        </dl>
+        <a class="back" href="#top">要約にもどる</a>
+      </div>
+      <div class="rec" id="r3">
+        <p class="time">14:10 #1 ガス交換障害</p>
+        <dl>
+          <dt>O</dt><dd>医師の指示により、O2を2Lから1Lへ減量。減量後のSpO2 95〜96%。呼吸苦の訴えなし。</dd>
+          <dt>A</dt><dd>減量後も酸素化は保たれている。</dd>
+          <dt>P</dt><dd>夜間のSpO2低下に注意する。</dd>
+        </dl>
+        <a class="back" href="#top">要約にもどる</a>
+      </div>
+    </div>
+
+    <div class="shift">
+      <p class="shift-head">準夜・看護師B</p>
+      <div class="rec" id="r4">
+        <p class="time">19:00</p>
+        <dl>
+          <dt>S</dt><dd>特になし</dd>
+          <dt>O</dt><dd>T36.9 P78 BP132/70 SpO2 95%(1L) 夕食7割 抗菌薬点滴終了、刺入部異常なし</dd>
+          <dt>A</dt><dd>著変なし</dd>
+          <dt>P</dt><dd>継続</dd>
+        </dl>
+        <a class="back" href="#top">要約にもどる</a>
+      </div>
+      <div class="rec" id="r5">
+        <p class="time">21:40 #3 転倒転落</p>
+        <dl>
+          <dt>S</dt><dd>「トイレに行こうと思って」</dd>
+          <dt>O</dt><dd>ベッドから降りようとしているところを発見。NCなし。ふらつきあり、付き添いでトイレ歩行。排尿あり</dd>
+          <dt>A</dt><dd>NC押さずに動く。転倒リスク高い</dd>
+          <dt>P</dt><dd>センサーマット設置。NC再指導</dd>
+        </dl>
+        <a class="back" href="#top">要約にもどる</a>
+      </div>
+    </div>
+
+    <div class="shift">
+      <p class="shift-head">深夜・看護師C</p>
+      <div class="rec" id="r6">
+        <p class="time">1:15 #3 転倒転落</p>
+        <dl>
+          <dt>S</dt><dd>「家に帰らないと」</dd>
+          <dt>O</dt><dd>再度ベッドから降りようとする。センサーマット作動にて訪室。場所の見当識あいまい。説明し入眠。</dd>
+          <dt>A</dt><dd>夜間せん妄の可能性あり。</dd>
+          <dt>P</dt><dd>頻回に訪室。日勤へ申し送り、Drへの報告を検討。</dd>
+        </dl>
+        <a class="back" href="#top">要約にもどる</a>
+      </div>
+      <div class="rec" id="r7">
+        <p class="time">6:00</p>
+        <dl>
+          <dt>O</dt><dd>T36.8、P76、BP126/72、SpO2 96%(1L)。夜間SpO2低下なし。3時以降入眠。夜間排尿3回。</dd>
+          <dt>A</dt><dd>呼吸状態は安定。</dd>
+          <dt>P</dt><dd>継続。</dd>
+        </dl>
+        <a class="back" href="#top">要約にもどる</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="card ask" aria-labelledby="ask-title">
+    <h2 id="ask-title">教えてください</h2>
+    <ol>
+      <li>この要約があれば、前日の記録を全部読まずに済みますか?</li>
+      <li>足りない情報は何ですか?</li>
+      <li>要約を信用できますか?できないなら、何があれば信用できますか?</li>
+      <li>今、始業の何分前に来て情報収集をしていますか?</li>
+      <li>月500円なら、自分で払ってでも使いたいですか?</li>
+    </ol>
+  </section>
+
+  <footer>要約の横の時刻を押すと、元の記録のその場所に移動して色がつきます。</footer>
+</main>
+</body>
+</html>
