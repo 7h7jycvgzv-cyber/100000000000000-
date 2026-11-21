@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from . import seeds
-from .arxiv import FIELDS, ArxivError, fetch_all
+from .arxiv import FIELDS, SOURCES, ArxivError, fetch_all
 
 DEFAULT_PAPERS = "data/papers.json"
 DEFAULT_SEEDS = "data/seeds.json"
@@ -29,7 +29,7 @@ def _write_json(path: str | Path, payload) -> None:
 def build_payload(papers, field_keys: list[str]) -> dict:
     return {
         "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "source": "arXiv API",
+        "source": "arXiv RSS" if any(p.source == "rss" for p in papers) else "arXiv API",
         "fields": {
             key: {
                 "label_en": FIELDS[key].label_en,
@@ -47,16 +47,22 @@ def build_payload(papers, field_keys: list[str]) -> dict:
 def cmd_fetch(args: argparse.Namespace) -> int:
     field_keys = args.fields or list(FIELDS)
     try:
-        papers = fetch_all(field_keys, max_results=args.max)
+        papers = fetch_all(field_keys, max_results=args.max, source=args.source)
     except (ArxivError, ValueError) as e:
         print(f"error: {e}", file=sys.stderr)
+        return 1
+
+    if not papers:
+        # Never replace a good papers.json with an empty one (e.g. an empty RSS feed).
+        print(f"error: no papers found; {args.out} was not changed", file=sys.stderr)
         return 1
 
     _write_json(args.out, build_payload(papers, field_keys))
 
     for key in field_keys:
         matched = [p for p in papers if key in p.fields]
-        print(f"[{key}] {FIELDS[key].label_ja} / {FIELDS[key].label_en}: {len(matched)}")
+        via = "" if not matched else " (via RSS)" if any(p.source == "rss" for p in matched) else " (via API)"
+        print(f"[{key}] {FIELDS[key].label_ja} / {FIELDS[key].label_en}: {len(matched)}{via}")
         for p in matched[: args.show]:
             print(f"  {p.published[:10]}  {p.arxiv_id}  {p.title[:90]}")
     print(f"saved {len(papers)} papers -> {args.out}")
@@ -115,6 +121,8 @@ def main(argv: list[str] | None = None) -> int:
     fetch.add_argument("--max", type=int, default=DEFAULT_PER_FIELD,
                        help=f"papers per field (1-200, default {DEFAULT_PER_FIELD})")
     fetch.add_argument("--out", default=DEFAULT_PAPERS, help="output JSON path")
+    fetch.add_argument("--source", choices=SOURCES, default="auto",
+                       help="auto: arXiv API, then the RSS feed if the API is unavailable (default)")
     fetch.add_argument("--show", type=int, default=3, help="titles to print per field")
     fetch.set_defaults(func=cmd_fetch)
 

@@ -7,10 +7,14 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from email.utils import parsedate_to_datetime
 import xml.etree.ElementTree as ET
 from dataclasses import asdict, dataclass, field
+from datetime import timezone
 
 API_URL = "https://export.arxiv.org/api/query"
+RSS_URL = "https://rss.arxiv.org/rss/"
+SOURCES = ("auto", "api", "rss")
 USER_AGENT = "seedradar/0.1"
 # arXiv asks API clients to wait 3 seconds between requests.
 REQUEST_INTERVAL_SEC = 3.0
@@ -21,6 +25,7 @@ MAX_RESULTS_LIMIT = 200
 NS = {
     "atom": "http://www.w3.org/2005/Atom",
     "arxiv": "http://arxiv.org/schemas/atom",
+    "dc": "http://purl.org/dc/elements/1.1/",
 }
 
 
@@ -73,6 +78,8 @@ class Paper:
     abs_url: str
     pdf_url: str
     fields: list[str] = field(default_factory=list)
+    # "api" (arXiv API) or "rss" (arXiv RSS feed, used when the API is unavailable).
+    source: str = "api"
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -80,6 +87,10 @@ class Paper:
 
 class ArxivError(RuntimeError):
     """Raised when the arXiv API cannot be reached or returns bad data."""
+
+
+class ArxivUnavailable(ArxivError):
+    """The request may be fine but the service is not answering (rate limit, 5xx, network)."""
 
 
 def build_search_query(categories: tuple[str, ...] | list[str], keywords: tuple[str, ...] | list[str] = ()) -> str:
@@ -180,21 +191,120 @@ def http_get(url: str) -> bytes:
                 return response.read()
         except urllib.error.HTTPError as e:
             if e.code != 429 and e.code < 500:
-                raise ArxivError(f"arXiv API returned HTTP {e.code}") from e
+                raise ArxivError(f"HTTP {e.code} from {urllib.parse.urlparse(url).netloc}") from e
             last_error = e
         except (urllib.error.URLError, TimeoutError) as e:
             last_error = e
         if attempt < MAX_ATTEMPTS:
             time.sleep(REQUEST_INTERVAL_SEC * attempt)
-    raise ArxivError(f"arXiv API request failed after {MAX_ATTEMPTS} attempts: {last_error}")
+    raise ArxivUnavailable(f"request failed after {MAX_ATTEMPTS} attempts: {last_error}")
 
 
-def fetch_field(field_key: str, max_results: int = 10, get=http_get) -> list[Paper]:
-    if field_key not in FIELDS:
-        raise ValueError(f"unknown field: {field_key} (choose from {', '.join(FIELDS)})")
+def build_rss_url(categories: tuple[str, ...] | list[str]) -> str:
+    if not categories:
+        raise ValueError("categories must not be empty")
+    return RSS_URL + "+".join(categories)
+
+
+def matches_keywords(text: str, keywords: tuple[str, ...] | list[str]) -> bool:
+    """Same rule as the API query: the abstract must mention at least one keyword."""
+    if not keywords:
+        return True
+    haystack = text.lower()
+    return any(re.search(r"(?<![a-z0-9])" + re.escape(k.lower()) + r"(?![a-z0-9])", haystack) for k in keywords)
+
+
+def parse_rss(xml_text: str | bytes) -> list[Paper]:
+    """Parse an arXiv RSS feed (the day's announcements). Replacements of old papers are skipped."""
+    try:
+        root = ET.fromstring(xml_text)
+    except ET.ParseError as e:
+        raise ArxivError(f"arXiv RSS returned invalid XML: {e}") from e
+
+    papers: list[Paper] = []
+    for item in root.iter("item"):
+        announce = _clean(item.findtext("arxiv:announce_type", default="new", namespaces=NS))
+        if announce not in ("new", "cross"):
+            continue
+        guid = _clean(item.findtext("guid", default=""))
+        raw_id = guid.rsplit("arXiv.org:", 1)[-1] if "arXiv.org:" in guid else ""
+        if not raw_id:
+            link = _clean(item.findtext("link", default=""))
+            raw_id = link.rsplit("/abs/", 1)[-1] if "/abs/" in link else ""
+        if not raw_id:
+            continue
+        arxiv_id, version = _split_id("/abs/" + raw_id)
+
+        description = item.findtext("description", default="") or ""
+        summary = _clean(description.split("Abstract:", 1)[1] if "Abstract:" in description else description)
+        categories = [_clean(c.text) for c in item.findall("category") if _clean(c.text)]
+        published = ""
+        pub_date = _clean(item.findtext("pubDate", default=""))
+        if pub_date:
+            try:
+                published = parsedate_to_datetime(pub_date).astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+            except (TypeError, ValueError):
+                published = ""
+        creators = _clean(item.findtext("dc:creator", default="", namespaces=NS))
+
+        papers.append(
+            Paper(
+                arxiv_id=arxiv_id,
+                version=version,
+                title=_clean(item.findtext("title", default="")),
+                summary=summary,
+                authors=[a.strip() for a in creators.split(",") if a.strip()],
+                primary_category=categories[0] if categories else "",
+                categories=categories,
+                # The feed carries the announcement date, not the submission date.
+                published=published,
+                updated=published,
+                abs_url=f"https://arxiv.org/abs/{arxiv_id}",
+                pdf_url=f"https://arxiv.org/pdf/{arxiv_id}v{version}",
+                source="rss",
+            )
+        )
+    return papers
+
+
+def fetch_field_api(field_key: str, max_results: int = 10, get=http_get) -> list[Paper]:
     spec = FIELDS[field_key]
     url = build_query_url(spec.categories, max_results, spec.keywords)
     return parse_feed(get(url))
+
+
+def fetch_field_rss(field_key: str, max_results: int = 10, get=http_get) -> list[Paper]:
+    """Today's announcements in the field's categories, filtered by the field's keywords."""
+    spec = FIELDS[field_key]
+    papers = parse_rss(get(build_rss_url(spec.categories)))
+    matched = [p for p in papers if matches_keywords(p.summary, spec.keywords)]
+    return matched[:max_results]
+
+
+def fetch_field(field_key: str, max_results: int = 10, get=http_get, source: str = "auto") -> list[Paper]:
+    """Fetch one field. With source "auto", fall back to RSS when the API is unavailable."""
+    if field_key not in FIELDS:
+        raise ValueError(f"unknown field: {field_key} (choose from {', '.join(FIELDS)})")
+    if source not in SOURCES:
+        raise ValueError(f"unknown source: {source} (choose from {', '.join(SOURCES)})")
+    if not 1 <= max_results <= MAX_RESULTS_LIMIT:
+        raise ValueError(f"max_results must be between 1 and {MAX_RESULTS_LIMIT}")
+    if source == "rss":
+        return fetch_field_rss(field_key, max_results, get=get)
+    try:
+        return fetch_field_api(field_key, max_results, get=get)
+    except ArxivUnavailable as api_error:
+        if source == "api":
+            raise
+        try:
+            papers = fetch_field_rss(field_key, max_results, get=get)
+        except ArxivError as rss_error:
+            raise ArxivUnavailable(f"arXiv API: {api_error}; RSS fallback: {rss_error}") from rss_error
+        if not papers:
+            raise ArxivUnavailable(
+                f"arXiv API: {api_error}; RSS fallback: no matching papers in today's feed for '{field_key}'"
+            ) from api_error
+        return papers
 
 
 def fetch_all(
@@ -202,14 +312,22 @@ def fetch_all(
     max_results: int = 10,
     get=http_get,
     sleep=time.sleep,
+    source: str = "auto",
 ) -> list[Paper]:
-    """Fetch every field, merging papers that appear in more than one."""
+    """Fetch every field, merging papers that appear in more than one.
+
+    With source "auto", once the API fails for one field the rest of the run uses RSS,
+    so a rate-limited API is not hit again.
+    """
     keys = field_keys or list(FIELDS)
     by_id: dict[str, Paper] = {}
     for i, key in enumerate(keys):
         if i > 0:
             sleep(REQUEST_INTERVAL_SEC)
-        for paper in fetch_field(key, max_results, get=get):
+        papers = fetch_field(key, max_results, get=get, source=source)
+        if source == "auto" and any(p.source == "rss" for p in papers):
+            source = "rss"
+        for paper in papers:
             existing = by_id.setdefault(paper.arxiv_id, paper)
             if key not in existing.fields:
                 existing.fields.append(key)
