@@ -1,455 +1,157 @@
 {
-  "fetched_at": "2026-11-17T05:30:59Z",
+  "fetched_at": "2026-11-22T01:49:01Z",
   "source": "arXiv API",
   "fields": {
     "space": {
-      "label_en": "Space & Astrophysics",
+      "label_en": "Space Technology",
       "label_ja": "宇宙開発",
       "categories": [
-        "astro-ph.EP",
         "astro-ph.IM",
-        "physics.space-ph"
-      ]
-    },
-    "quantum": {
-      "label_en": "Quantum Computing",
-      "label_ja": "量子計算",
-      "categories": [
-        "quant-ph"
-      ]
-    },
-    "ai": {
-      "label_en": "Artificial Intelligence",
-      "label_ja": "AI",
-      "categories": [
-        "cs.AI",
-        "cs.LG",
-        "cs.CL"
+        "physics.space-ph",
+        "eess.SP",
+        "eess.SY",
+        "eess.IV",
+        "cs.RO",
+        "cs.NI",
+        "cs.CV"
+      ],
+      "keywords": [
+        "spacecraft",
+        "cubesat",
+        "satellite constellation",
+        "earth observation",
+        "remote sensing",
+        "on-orbit",
+        "in-orbit",
+        "space debris",
+        "low earth orbit",
+        "inter-satellite",
+        "satellite communication",
+        "satellite imagery"
       ]
     }
   },
-  "count": 15,
+  "count": 5,
   "papers": [
     {
-      "arxiv_id": "2611.20765",
+      "arxiv_id": "2611.26065",
       "version": 1,
-      "title": "STA: A Split Temporal Adversary Method for Evaluating Robustness of Multimodal RL-based Driving Policies",
-      "summary": "Multimodal reinforcement learning (MRL) offers a promising paradigm for autonomous driving by jointly leveraging complementary sensor observations to learn effective decision-making policies. However, its effectiveness critically depends on temporal alignment across modalities, making temporal inconsistency a fundamental vulnerability. Even subtle misalignment or latency can corrupt fused representations and ultimately lead to decision failures. Existing studies have explored adversarial attacks to induce cross-modal temporal inconsistencies, thereby enabling systematic evaluation of the temporal robustness of MRL policies. However, existing methods remain limited in generality, realism, and adaptivity. To address these limitations, we propose the Split Temporal Adversary (STA), which formulates multimodal temporal attacks as a unified decision process that jointly optimizes attack timing and modality selection under realistic policy-aware and budget-constrained settings. STA includes two mechanisms: a) a unified multimodal temporal perturbation mechanism that delays observations via historical states, removing the need for modality-specific noise; b) a split multimodal adversarial decision mechanism that jointly optimizes attack timing and modality selection through adaptive optimization while leveraging the victim policy's clean actions to identify sensitive decision patterns. We provide a theoretical analysis of the induced distribution shift and a modality selection principle. Experiments in the CARLA simulator show that STA more than doubles the collision rate of the strongest baseline against PPO while using 17.8\\% fewer attack attempts, and that it generalizes to a VLM-based driving policy. These results reveal temporal consistency as a critical vulnerability, highlighting temporal robustness as essential for safe autonomous driving.",
+      "title": "Domain-Aware Conformal Prediction for Trustworthy Spacecraft Pose Estimation under Sim-to-Real Shift",
+      "summary": "Autonomous rendezvous and proximity operations require not only an accurate estimate of the pose of the target spacecraft, but also a reliable indication of when this estimate can be trusted. Conformal prediction provides such an indication with a formal guarantee, by producing pose uncertainty sets that contain the true pose with a specified probability. Such a guarantee, however, assumes that calibration and test data follow the same distribution, an assumption that is violated in orbital perception, where labelled calibration images are available only from synthetic renderings while operational images are real. In this work, we show on the SPEED+ dataset that conformal pose estimation calibrated on synthetic images loses its coverage guarantee on real images, and that many of the resulting failures are silent: the predicted pose set appears valid but excludes the true pose. To address this, we calibrate on synthetic images translated to the appearance of real images. Since translation alters appearance while preserving geometry, the synthetic pose labels remain valid and no labelled real images are required. Experiments with two translation models show that this calibration restores coverage above the specified level for miscoverage levels of 0.1 and above, and reduces silent failures from up to 43.5% to at most 3.3% of the test images, bringing conformal pose estimation a step closer to trustworthy deployment in space.",
       "authors": [
-        "Shenghao Xiong",
-        "Xiaolin Chang"
+        "Nidhal Eddine Chenni",
+        "Arunkumar Rathinam",
+        "Djamila Aouada"
       ],
-      "primary_category": "cs.CR",
+      "primary_category": "cs.CV",
       "categories": [
-        "cs.CR",
-        "cs.LG",
-        "cs.RO"
+        "cs.CV"
       ],
-      "published": "2026-11-16T09:16:45Z",
-      "updated": "2026-11-16T09:16:45Z",
-      "abs_url": "https://arxiv.org/abs/2611.20765",
-      "pdf_url": "https://arxiv.org/pdf/2611.20765v1",
-      "fields": [
-        "ai"
-      ]
-    },
-    {
-      "arxiv_id": "2611.20759",
-      "version": 1,
-      "title": "Instant Weight-Space Consolidation for Long-Term Memory in LLMs",
-      "summary": "Agentic memory systems give LLMs persistent memory by extracting experience into text and retrieving it at query time, but the model itself does not evolve: however many interactions it has had, it starts each query the same. Extraction errors compound, implicit cross-session patterns that no single fragment states cannot be surfaced, and the construction cost grows with every conversation. Fine-tuning on past interactions does change the weights, but requires backpropagation at serving time and degrades on long histories. We introduce CLAM (Carried Latent Adapter Memory), which combines the strengths of both: a recurrent hypernetwork performs parametric consolidation, compiling a stream of session activations into a low-rank adapter in a single forward pass with no gradient steps and no language-model generation calls, while a complementary episodic buffer supplies verbatim detail at inference. A gated latent state carries knowledge across sessions in fixed size, so the parametric memory accumulates without growing. On LoCoMo and LongMemEval-S across three open models (2-7B parameters), CLAM leads all agentic baselines by 1-45 points and all gradient-based parametric methods by 10-45 points, while requiring zero generative LLM calls, zero gradient steps, and 3-151x less wall-clock time than extraction systems to build its memory. The two channels are complementary: the consolidated adapter adds 12-15 accuracy points when the episodic buffer misses the gold evidence, and still adds 4-5 points even with an oracle buffer.",
-      "authors": [
-        "Manan Suri",
-        "Dinesh Manocha"
-      ],
-      "primary_category": "cs.CL",
-      "categories": [
-        "cs.CL"
-      ],
-      "published": "2026-11-16T09:09:55Z",
-      "updated": "2026-11-16T09:09:55Z",
-      "abs_url": "https://arxiv.org/abs/2611.20759",
-      "pdf_url": "https://arxiv.org/pdf/2611.20759v1",
-      "fields": [
-        "ai"
-      ]
-    },
-    {
-      "arxiv_id": "2611.20756",
-      "version": 1,
-      "title": "Genuine multipartite entanglement in ring-shaped Hubbard models",
-      "summary": "Spin states can be extracted from many-electron systems by detecting electrons at a set of lattice sites, which act as particle labels. Here we quantify the genuine multipartite entanglement (GME) of such spin states, which are generally mixed, in standard and extended Hubbard rings, together with the corresponding detection probability. We show that the on-site repulsion, by suppressing charge fluctuations, enhances the GME, and that in the strongly interacting regime at half filling the detection probability decreases only weakly with the number of spins. The GME is robust at temperatures below the singlet--triplet gap, and can even be enhanced by doping, in spite of the induced charge fluctuations. The transition from spin- to charge-density waves in the extended Hubbard model is signaled by an abrupt suppression of both the GME and the detection probability.",
-      "authors": [
-        "K. Shahzad",
-        "S. Pittalis",
-        "G. Goldoni",
-        "R. Di Felice",
-        "F. Troiani"
-      ],
-      "primary_category": "quant-ph",
-      "categories": [
-        "quant-ph",
-        "cond-mat.str-el"
-      ],
-      "published": "2026-11-16T09:05:12Z",
-      "updated": "2026-11-16T09:05:12Z",
-      "abs_url": "https://arxiv.org/abs/2611.20756",
-      "pdf_url": "https://arxiv.org/pdf/2611.20756v1",
-      "fields": [
-        "quantum"
-      ]
-    },
-    {
-      "arxiv_id": "2611.20755",
-      "version": 1,
-      "title": "GPRM: Global Perspective Process Reward Model",
-      "summary": "Process Reward Models (PRMs) are widely used for step-level evaluation of multi-step reasoning in large language models, but existing methods are often limited by weak historical dependency modeling and insufficient global awareness. They typically fail to leverage prior step evaluations for coherent judgment and lack visibility into subsequent reasoning, leading to suboptimal assessment of intermediate steps. To address this issue, we propose the Global Perspective Process Reward Model (GPRM), which jointly models the problem, previous reasoning steps and their evaluations, the current step, and future steps to enable history-aware and globally informed process evaluation. We further introduce a structured evaluation framework along four dimensions---look back, look ahead, self-check, and goal alignment---to assess prior consistency, future plausibility, step validity, and task alignment. Based on this framework, we construct datasets for supervised fine-tuning (SFT) and reinforcement learning (GRPO). Experiments show that, despite using less training data and smaller model sizes, GPRM outperforms strong baseline models by 7.8 and 5.4 points on PRMBench and ProcessBench, respectively. GPRM also generalizes well across tasks, surpassing the GPT-4.1 baseline on Agent Error Bench, improving strong baselines by around 4 points under test-time scaling (TTS), and achieving competitive performance on PPE.",
-      "authors": [
-        "Zifan Zhang",
-        "Zhengbo Jiao",
-        "Shaobo Wang",
-        "Jing Zhou",
-        "Guoyi Li",
-        "Jiayi Chen",
-        "Wei Wang",
-        "Bing Zhao",
-        "Cheng Fang",
-        "Xiaoxiao Xu",
-        "Hu Wei",
-        "Linfeng Zhang",
-        "Lin Qu"
-      ],
-      "primary_category": "cs.CL",
-      "categories": [
-        "cs.CL"
-      ],
-      "published": "2026-11-16T09:03:27Z",
-      "updated": "2026-11-16T09:03:27Z",
-      "abs_url": "https://arxiv.org/abs/2611.20755",
-      "pdf_url": "https://arxiv.org/pdf/2611.20755v1",
-      "fields": [
-        "ai"
-      ]
-    },
-    {
-      "arxiv_id": "2611.20754",
-      "version": 1,
-      "title": "Directionality of low-energy electron recoils in the CYGNO experiment",
-      "summary": "Electron-recoil directionality can help distinguish solar-neutrino interactions from backgrounds and, together with recoil-energy measurements and three-dimensional tracking, enable neutrino-energy spectroscopy. We study the reconstruction of the initial direction of low-energy electron recoils in the CYGNO optical time-projection chamber, focusing on the 50 L LIME prototype and its high-granularity scientific CMOS (sCMOS) readout. A dedicated algorithm identifies the interaction point from the asymmetry of the track light distribution and estimates the recoil direction from the early portion of the ionization trail, before multiple scattering erases most of the directional information. The method is characterized with a detailed Monte Carlo simulation of electron recoils and detector response. Samples spanning 15 keV to 70 keV are used to optimize the algorithm parameters by minimizing the width of the reconstructed-minus-true projected-angle distribution. The projected angular response is modeled by two Gaussian components that account for its dependence on track inclination. The narrower component, associated with favorable projections approximately parallel to the Gas Electron Multiplier (GEM) plane, has a width that improves from about $20^\\circ$ near 20 keV to about $12^\\circ$ at 60 keV. We also quantify the fraction of events in the correctly reconstructed angular core and discuss the dominant limitations of a camera-only two-dimensional measurement.",
-      "authors": [
-        "F. D. Amaro",
-        "E. Baracchini",
-        "L. Benussi",
-        "C. Capoccia",
-        "M. Caponero",
-        "L. G. M. de Carvalho",
-        "G. Cavoto",
-        "I. A. Costa",
-        "M. D'Astolfo",
-        "G. D'Imperio",
-        "G. Dho",
-        "E. Di Marco",
-        "J. M. F. dos Santos",
-        "D. Fiorina",
-        "F. Iacoangeli",
-        "H. P. Lima",
-        "G. Maccarrone",
-        "P. Meloni",
-        "A. Messina",
-        "C. M. B. Monteiro",
-        "R. A. Nobrega",
-        "G. M. Oppedisano",
-        "I. F. Pains",
-        "E. Paoletti",
-        "F. Petrucci",
-        "S. Piacentini",
-        "D. Pierluigi",
-        "D. Pinci",
-        "A. Russo",
-        "G. Saviano",
-        "F. F. Scamporlino",
-        "R. C. Sousa",
-        "N. J. C. Spooner",
-        "R. Tesauro",
-        "S. Tomassini",
-        "S. Torelli"
-      ],
-      "primary_category": "physics.ins-det",
-      "categories": [
-        "physics.ins-det",
-        "astro-ph.IM",
-        "hep-ex"
-      ],
-      "published": "2026-11-16T09:02:26Z",
-      "updated": "2026-11-16T09:02:26Z",
-      "abs_url": "https://arxiv.org/abs/2611.20754",
-      "pdf_url": "https://arxiv.org/pdf/2611.20754v1",
+      "published": "2026-11-19T13:08:51Z",
+      "updated": "2026-11-19T13:08:51Z",
+      "abs_url": "https://arxiv.org/abs/2611.26065",
+      "pdf_url": "https://arxiv.org/pdf/2611.26065v1",
       "fields": [
         "space"
-      ]
+      ],
+      "source": "api"
     },
     {
-      "arxiv_id": "2611.20752",
+      "arxiv_id": "2611.25984",
       "version": 1,
-      "title": "Who Benefits from Telemonitoring? Uplift Modelling of a Nationwide Home Blood Pressure Monitoring Programme",
-      "summary": "Home blood pressure (BP) telemonitoring programmes are being deployed at national scale, yet enrolment resources are finite and the benefit of telemonitoring is unlikely to be uniform across patients. We study the Primary Technology-Enhanced Care for Hypertension (PTEC-HT) programme, a nationwide telemonitoring programme for hypertensive patients in Singapore. Using retrospective data on 16,694 patients registered between August 2020 and May 2024, we first estimate the average treatment effect of the programme on 6-month BP control against a propensity-score-matched non-participant cohort, finding an absolute improvement of 5 percentage points in the rate of BP control (74% vs. 69%, $p = 3\\times10^{-12}$), rising to 12 percentage points (63% vs. 50%, $p = 1\\times10^{-15}$) among patients with uncontrolled BP at baseline. We then move beyond the average effect and apply uplift modelling to estimate individual treatment effects. Across five uplift learners evaluated with 5-fold cross-validation and Qini curves, an uplift random forest performed best on the full cohort and an S-learner on the uncontrolled-baseline subcohort, although performance bands overlapped across learners. On held-out patients, realised uplift was largest in the top predicted-uplift groups and declined across the ranking. These patients had higher baseline BP grade, more recent hypertension diagnosis and lower medication and diagnosis burden, a profile we offer as hypothesis-generating for targeted enrolment. A handcrafted rule built from these features was competitive with the learned models, outperforming all of them on the uncontrolled-baseline cohort, suggesting that uplift models are useful for discovering heterogeneity that can be distilled into simple enrolment criteria for directing limited care team capacity.",
+      "title": "A Brief Overview of Non-Terrestrial Networks (Updated 2026)",
+      "summary": "This article extends the 2023 preprint \\emph{A brief introduction to satellite communications for Non-Terrestrial Networks (NTN)} (\\href{https://arxiv.org/abs/2305.04590v1}{arXiv:2305.04590v1}) with a revision of its foundations, tables and state of the art as of 18 November 2026. It revisits propagation, link budgets, spectrum reuse and phased arrays, including corrected equations and numerical examples. Updated tables distinguish operational, launched and planned constellations and compare published fixed-terminal rates with direct-to-device services. The discussion incorporates developments in 3GPP Releases 17--20, commercial LTE-based direct-to-cell services and research towards 6G non-terrestrial networks. Operator announcements are distinguished from independent measurements and future plans. Open challenges include spectrum coordination, Doppler and timing compensation, mobility, capacity, security and the sustainability of low Earth orbit.",
       "authors": [
-        "Connie Kou"
+        "Jose Alberto Hernandez",
+        "Pedro Reviriego"
       ],
-      "primary_category": "cs.LG",
+      "primary_category": "cs.NI",
       "categories": [
-        "cs.LG"
+        "cs.NI"
       ],
-      "published": "2026-11-16T09:01:44Z",
-      "updated": "2026-11-16T09:01:44Z",
-      "abs_url": "https://arxiv.org/abs/2611.20752",
-      "pdf_url": "https://arxiv.org/pdf/2611.20752v1",
+      "published": "2026-11-19T12:07:07Z",
+      "updated": "2026-11-19T12:07:07Z",
+      "abs_url": "https://arxiv.org/abs/2611.25984",
+      "pdf_url": "https://arxiv.org/pdf/2611.25984v1",
       "fields": [
-        "ai"
-      ]
+        "space"
+      ],
+      "source": "api"
     },
     {
-      "arxiv_id": "2611.20736",
+      "arxiv_id": "2611.25837",
       "version": 1,
-      "title": "GainCtrl: Predicting Remaining Gains for Efficient LLM Agent Execution",
-      "summary": "Large language models (LLMs) are widely used to power agents that interact with tools and environments to solve complex tasks. Repeated attempts improve the quality of tool-using agents, but continued execution incurs additional costs even when it is unlikely to improve the best result ultimately returned. This raises the question of when to stop an attempt to reduce execution cost while preserving task-level Best-of-N quality. To address this question, we introduce GainCtrl, a gain-based execution controller for LLMs. In GainCtrl, a lightweight CPU predictor uses interaction histories to estimate expected positive gains over retained scores, which are then used to guide stopping decisions with calibrated thresholds to limit the loss in mean Best-of-N task quality. We evaluate the controller through trajectory replay across three environments and three LLM actors. Comparisons of interpolated quality-cost Pareto frontiers show that GainCtrl generally uses fewer tokens than baselines at matched target quality. Fixed policies also achieve quality close to that of full execution while substantially reducing token consumption. The predictor runs at millisecond latency on a single CPU thread, supporting repeated monitoring without access to LLM internals.",
+      "title": "Software-Defined Internet Integration of Satellite Networks (SDISN)",
+      "summary": "This paper proposes SDISN, a software-defined Internet integration of satellite networks. It facilitates the transmission of IP traffic from user terminals (UTs) or Internet nodes over a satellite network with inter-satellite links (ISLs). Gateways (GWs) together with Points of Presence (PoPs) support the transition between the satellite network and the Internet. UTs and GWs connect to the satellite network via serving satellites (SrvSats). As the satellites orbit the Earth at high speed, UTs and GWs frequently change their SrvSats. This causes frequent changes to their reachability, which poses a major challenge for integration. In the proposed solution, GWs and SrvSats encapsulate traffic with forwarding information so that the traffic can be carried over the satellite network towards appropriate SrvSats of UTs or GWs. The forwarding information on the encapsulating nodes is continuously updated by a controller to reflect changed SrvSats and possibly changed topology of the satellite network. Design goals for the proposed architecture were low complexity on satellites, high ability for traffic engineering, and keeping UTs out of the routing system for security and compatibility reasons. UTs may have increased security requirements (ISRs) such that their traffic should be carried within the constellation to avoid non-trusted terrestrial infrastructure. Extensions are proposed to support such ISRs. UTs may obtain either dynamic IP addresses from a nearby GW/PoP wherever they roam or they may obtain static IP addresses from a fixed Home GW/PoP. In the latter case, triangle routing via the Home GW occurs when the UT roams away from the Home GW. As this adds latency to the communication, we investigate architectural extensions for latency reduction. In addition, we show how traffic engineering can be performed in such an architecture with the help of alternate GWs and SrvSats.",
       "authors": [
-        "Kangwen Zhao",
-        "Jianfeng Cai",
-        "Ruopei Sun",
-        "Mingxiao Feng",
-        "Peng Zhang",
-        "Wengang Zhou",
-        "Houqiang Li"
+        "Michael Menth",
+        "Moritz Flüchter",
+        "Jens Haala"
       ],
-      "primary_category": "cs.AI",
+      "primary_category": "cs.NI",
       "categories": [
+        "cs.NI"
+      ],
+      "published": "2026-11-19T09:52:15Z",
+      "updated": "2026-11-19T09:52:15Z",
+      "abs_url": "https://arxiv.org/abs/2611.25837",
+      "pdf_url": "https://arxiv.org/pdf/2611.25837v1",
+      "fields": [
+        "space"
+      ],
+      "source": "api"
+    },
+    {
+      "arxiv_id": "2611.25724",
+      "version": 1,
+      "title": "Verifying Before Enhancing: Target Evidence Chain Verification for Infrared Small Target Detection",
+      "summary": "Infrared small target detection is essential for early warning, surveillance, remote sensing, and space-based target perception. However, infrared small targets are typically tiny, weakly textured, and boundary-blurred, making them difficult to distinguish from complex backgrounds. Moreover, target-like background structures can produce salient responses across multiple scales, making response strength alone insufficient for reliable target discrimination. To address this challenge, we propose VBE-UNet, a Target Evidence Chain Verification Network that assesses candidate reliability beyond response magnitude through complementary evidence cues. Specifically, counterfactual background explanation models local target evidence, while joint evidence verification integrates cross-scale support and perturbation-based contribution verification to guide feature recomposition. The resulting reliability estimates guide selective feature refinement, promoting target-relevant responses while reducing unsupported background activations. Extensive experiments on IRSTD-1K, NUDT-SIRST, and NUAA-SIRST demonstrate that VBE-UNet achieves superior detection accuracy and lower false-alarm rates compared with state-of-the-art methods. Ablation studies and evidence reliability analysis further validate the effectiveness of the proposed verification framework.",
+      "authors": [
+        "Jiayi Zuo",
+        "Songwei Pei",
+        "Shuhuai Wang",
+        "Yifei Wu",
+        "Shangguang Wang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
         "cs.AI"
       ],
-      "published": "2026-11-16T08:40:29Z",
-      "updated": "2026-11-16T08:40:29Z",
-      "abs_url": "https://arxiv.org/abs/2611.20736",
-      "pdf_url": "https://arxiv.org/pdf/2611.20736v1",
-      "fields": [
-        "ai"
-      ]
-    },
-    {
-      "arxiv_id": "2611.20667",
-      "version": 1,
-      "title": "Near-synchronous multiphoton quantum interference",
-      "summary": "Nonclassical multiphoton interference is an important resource for optical quantum information processing, and its output statistics depend on the distinguishability of the input photons. In this paper, using time delay as a tunable parameter, we theoretically analyze the interference behavior of independent pure-state single photons with identical Gaussian spectral envelopes under near-synchronous conditions. Using the immanant representation of the single-photon internal-state overlap matrix to express the weights of the exchange-symmetry components, we determine the leading asymptotic behavior and approximation error of each weight, and characterize the weight suppression laws when different groups of photons become synchronized on different scales. Given the local identity classes of the delay functions and the vanishing orders of pairwise delay differences, the vanishing orders of the weights of the exchange-symmetry components can be computed in polynomial time by integer minimum-cost flow. On this basis, we provide a network-independent total-variation error bound for the complete output photon-number distribution, establish a quantitative relationship among the photon spectral width, synchronization precision, and interference statistics deviation, and provide a quantitative basis for the analysis and approximation of near-synchronous multiphoton interference.",
-      "authors": [
-        "Xiangshuai Dong",
-        "Tingzeng Wu"
-      ],
-      "primary_category": "quant-ph",
-      "categories": [
-        "quant-ph",
-        "math.CO"
-      ],
-      "published": "2026-11-16T07:29:48Z",
-      "updated": "2026-11-16T07:29:48Z",
-      "abs_url": "https://arxiv.org/abs/2611.20667",
-      "pdf_url": "https://arxiv.org/pdf/2611.20667v1",
-      "fields": [
-        "quantum"
-      ]
-    },
-    {
-      "arxiv_id": "2611.20654",
-      "version": 1,
-      "title": "Magnetic Power in Binaries: From Coalescing Binary Neutron Stars to Close-in Exoplanetary Systems",
-      "summary": "A binary system containing two magnetic components (\"stars\") can be modeled as a circuit powered by the orbital motion, with the magnetic field lines linking the two stars serving as wires. When the total resistance in the binary components is small -- as found in many astrophysical systems such as binary neutron stars and extra-solar hot-Jupiter or super-Earth systems -- the connected field lines are twisted and open up in a quasi-cyclic manner, leading to quasi-periodic energy dissipation and flares. We derive analytic expressions for the average and episodic magnetic powers from such systems, providing a quantitative description on how the powers depend on the magnetic orientations of the two stars. The power can be much larger than in the case where one of the stars has a negligible magnetic field. It may manifest as pre-merger quasi-cyclic flares in coalescing neutron-star binaries and as orbit-regulated radio emissions in exoplanetary systems.",
-      "authors": [
-        "Dong Lai",
-        "Tu Guo",
-        "Nicholas Corso"
-      ],
-      "primary_category": "astro-ph.HE",
-      "categories": [
-        "astro-ph.HE",
-        "astro-ph.EP",
-        "astro-ph.SR"
-      ],
-      "published": "2026-11-16T07:10:38Z",
-      "updated": "2026-11-16T07:10:38Z",
-      "abs_url": "https://arxiv.org/abs/2611.20654",
-      "pdf_url": "https://arxiv.org/pdf/2611.20654v1",
+      "published": "2026-11-19T08:40:16Z",
+      "updated": "2026-11-19T08:40:16Z",
+      "abs_url": "https://arxiv.org/abs/2611.25724",
+      "pdf_url": "https://arxiv.org/pdf/2611.25724v1",
       "fields": [
         "space"
-      ]
+      ],
+      "source": "api"
     },
     {
-      "arxiv_id": "2611.20636",
+      "arxiv_id": "2611.25665",
       "version": 1,
-      "title": "Ca II IRT activity indices from $Gaia$ spectroscopy: a baseline method for photospheric contribution estimates",
-      "summary": "The $Gaia$ high-resolution spectroscopic observations using Radial Velocity Spectrometer offers a unique opportunity to study stellar Ca II infrared triplet (IRT) activity. A key step in estimating activity indices is subtracting the photospheric contribution. The canonical template-based method often fails because, for many stars, the observed line cores are deeper than the model predictions, which prevents valid activity measurements. In this work, we explore an alternative approach that constructs a baseline from less active stars as a function of effective temperature (and metallicity) to represent the photospheric contribution. Our results show that, for dwarf stars, compared with the canonical method, the baseline method not only yields far more objects with valid activity measurements, but also avoids many extremely low and unreliable values (e.g., log$R'_{\\rm IRT} \\lesssim -6$). The Ca II IRT activity indices derived from the baseline method correlate well with other activity proxies, confirming their reliability as activity indicators. Furthermore, they show a relation with stellar rotation, not only recovering the typical rotation--activity relation, but also revealing fine structures that may be associated with different regimes in gyrochronology. Our findings suggest that the baseline method can serve as a robust alternative for deriving accurate activity estimates, and will be particularly useful for obtaining activity indices for tens of millions of stars with the upcoming $Gaia$ Data Release 4.",
+      "title": "GNetSS: Towards Learning GNSS Corrections without Ground Truth",
+      "summary": "We present GNetSS, a self-supervised GNSS position correction framework that improves the robustness of single point positioning (SPP) without requiring ground-truth locations for training. GNetSS combines a transformer-based network with a deterministic differentiable positioning solver. The network predicts satellite-wise pseudorange corrections by modelling inter-satellite geometry and temporal context, while the solver converts these corrected measurements into receiver position corrections under GNSS geometry and optional motion constraints. Unlike supervised GNSS correction methods that rely on ground-truth, GNetSS derives its training signal directly from GNSS measurement consistency. Experimental results show that GNetSS improves robustness across open-sky, urban, and forested environments. The method is particularly effective at suppressing large-error outliers, reducing the maximum 3D positioning error by over 50% compared with SPP. These results demonstrate the potential of self-supervised pseudorange correction for scalable and robust GNSS positioning in real-world autonomy applications. Code and the in-house dataset will be released upon acceptance.",
       "authors": [
-        "Wang Song",
-        "Li Tanda",
-        "Han Henggeng",
-        "Li Xue",
-        "Liu Jifeng"
+        "JiaXu Chee",
+        "Simon Denman",
+        "Fahira Afzal Maken",
+        "Qingqing Cheng",
+        "Amir Khodabandeh",
+        "Milad Ramezani"
       ],
-      "primary_category": "astro-ph.SR",
+      "primary_category": "cs.RO",
       "categories": [
-        "astro-ph.SR",
-        "astro-ph.GA",
-        "astro-ph.IM"
+        "cs.RO"
       ],
-      "published": "2026-11-16T06:57:08Z",
-      "updated": "2026-11-16T06:57:08Z",
-      "abs_url": "https://arxiv.org/abs/2611.20636",
-      "pdf_url": "https://arxiv.org/pdf/2611.20636v1",
+      "published": "2026-11-19T07:44:20Z",
+      "updated": "2026-11-19T07:44:20Z",
+      "abs_url": "https://arxiv.org/abs/2611.25665",
+      "pdf_url": "https://arxiv.org/pdf/2611.25665v1",
       "fields": [
         "space"
-      ]
-    },
-    {
-      "arxiv_id": "2611.20622",
-      "version": 1,
-      "title": "Observable Spectral Framework for Noisy Amplitude Amplification: Stopping Stability and Correction",
-      "summary": "Stopping rules for noisy amplitude amplification often rely on channel-specific success-probability formulas, limiting their transfer across noise mechanisms. We develop an observable spectral framework for stationary noisy standard amplitude amplification under explicit leading-mode, spectral-separation, and residual-control conditions. Within this class, the first amplification lobe has a damped-oscillatory leading component and a bounded non-leading contribution. We derive how frequency shift, damping, and observable phase offset displace the leading peak, and establish sampled-gap criteria for retaining the ideal integer stopping depth, certifying recalibration, or selecting a robust candidate window. In single-target Grover search, frequency and damping errors have stopping-coordinate sensitivities proportional to the search-space size, whereas phase offsets scale with its square root; residual modes can independently reverse the ordering of neighbouring depths. Analytical constructions, circuit simulations, finite-shot inference, and calibration-derived device-like trajectories examine these predictions and their operational limits. For a 64-element search, an a posteriori sampled-set check selects depth five over six, with success probability increasing from 0.595 to 0.626. The resulting theory links observable spectral dynamics to conditional integer stopping guarantees without requiring a separate microscopic channel solution.",
-      "authors": [
-        "Ge Zhong",
-        "Charith Jayasekara",
-        "Nisal De Silva",
-        "Muhammad Usman",
-        "Muhammad Aamir Cheema",
-        "Chetan Arora"
       ],
-      "primary_category": "quant-ph",
-      "categories": [
-        "quant-ph",
-        "cs.ET"
-      ],
-      "published": "2026-11-16T06:44:59Z",
-      "updated": "2026-11-16T06:44:59Z",
-      "abs_url": "https://arxiv.org/abs/2611.20622",
-      "pdf_url": "https://arxiv.org/pdf/2611.20622v1",
-      "fields": [
-        "quantum"
-      ]
-    },
-    {
-      "arxiv_id": "2611.20617",
-      "version": 1,
-      "title": "Complex Interplay between Outer Disk Dynamics and Inner Water Reservoir",
-      "summary": "We present a homogeneous characterization of outer disk dust and gas properties for 51 protoplanetary disks from the JWST/MIRI Cycle 1 programs, combining new ALMA observations with archival data. Visibility fitting with frank recovers more and higher-contrast substructures in the mm continuum than image-plane analysis, placing the innermost features of several disks at 4-5 au and leaving only three disks featureless at the current resolution. CO gas disk sizes span $\\sim$60-1000 au and correlate strongly with mm continuum sizes, with $R_{\\rm CO}/R_{\\rm mm}$ ranging from 1.4 to 9.7 (median 2.95). We then connect these outer disk properties to JWST/MIRI inner disk water diagnostics. We find no global correlation between the cold-to-hot water flux ratio ($F_{\\rm cold}/F_{\\rm hot}$), a proposed proxy of cold water enrichment by pebble transport, and any single outer disk parameter, including $R_{\\rm mm}$, $R_{\\rm CO}/R_{\\rm mm}$, and innermost substructure location. Three compact ($R_{\\rm mm}<30$ au), structureless disks with $R_{\\rm CO}/R_{\\rm mm}>4$ show both elevated $F_{\\rm cold}/F_{\\rm hot}$ and cold water emission near the snowline temperature, consistent with unimpeded inward drift of icy pebbles. For structured disks, the water properties instead vary widely at fixed gap location, reflecting the sensitivity of the inner disk water content to multiple factors, including gap leakiness, grain size, and thermal history. Linking outer disk dust evolution to inner disk water content thus requires carefully selected samples with detailed constraints on these additional parameters.",
-      "authors": [
-        "Feng Long",
-        "Ilaria Pascucci",
-        "Paola Pinilla",
-        "Andrea Banzatti",
-        "Adrien Houge",
-        "Sean M. Andrews",
-        "Doug Johnstone",
-        "Gregory J. Herczeg",
-        "Joan Najita",
-        "Klaus M. Pontoppidan",
-        "Joe Williams",
-        "Ke Zhang",
-        "Geoffrey A. Blake",
-        "Maria Jose Colmenares",
-        "Giovanni Rosotti",
-        "Enrico Ragusa",
-        "Colette Salyk",
-        "Chengyan Xie",
-        "Tayt Armitage",
-        "Xue-Ning Bai",
-        "Daniel Harsono",
-        "Till Kaeufer",
-        "Sebastiaan Krijt",
-        "Giuseppe Lodato",
-        "Yao Liu",
-        "Carlo F. Manara",
-        "Francois Menard",
-        "Mayank Narang",
-        "Miguel Vioque",
-        "David J. Wilner",
-        "the JDISCS Collaboration"
-      ],
-      "primary_category": "astro-ph.EP",
-      "categories": [
-        "astro-ph.EP"
-      ],
-      "published": "2026-11-16T06:40:17Z",
-      "updated": "2026-11-16T06:40:17Z",
-      "abs_url": "https://arxiv.org/abs/2611.20617",
-      "pdf_url": "https://arxiv.org/pdf/2611.20617v1",
-      "fields": [
-        "space"
-      ]
-    },
-    {
-      "arxiv_id": "2611.20613",
-      "version": 1,
-      "title": "Noise-Aware Testing of NISQ Quantum Programs: Self-Baseline Oracle with a Controlled False-Positive Rate",
-      "summary": "Testing quantum programs on Noisy Intermediate-Scale Quantum (NISQ) devices faces a test-oracle problem: hardware noise and finite-shot sampling make the runs of a correct program vary as much as those of a faulty one, so oracles with a fixed acceptance threshold produce false positives that depend on the program and the backend. We present a noise-aware testing framework built on self-baseline calibration: each run of the program under test is compared with repeated executions of a trusted reference program on the same backend, and the acceptance threshold is the $(1-α)$ quantile of the finite-shot null distribution of the Jensen-Shannon divergence, so the oracle's false-positive rate is a level set in advance. A noncentral chi-square model predicts detection power, a homogeneity test and a two-run sentinel detect drift, a mutation engine labels every mutant exactly within a three-class noise-aware taxonomy, and zero-noise extrapolation attributes rejections to faults or noise. In simulation on nine core benchmarks, 32 QASMBench programs, ten real bugs, seven noise regimes and three device snapshots, the oracle's false-positive rate is 0.0011 at $α= 10^{-3}$ over 9,000 correct runs, against 36-74% for fixed thresholds, 8.9% for a QOIN-style filter and 10.8% for a globally calibrated threshold, while attaining the highest F1 on non-equivalent faults (0.941). On an IBM Heron device, using about 14 minutes of QPU time, it rejected none of 82 correct runs and detected 120 of 121 faults and semantic mutants, and a two-run sentinel reduced drift-induced false positives from 27.4% to 1.8%.",
-      "authors": [
-        "Mir Mohammad Yousuf",
-        "Shabir Ahmad Sofi"
-      ],
-      "primary_category": "quant-ph",
-      "categories": [
-        "quant-ph",
-        "cs.SE"
-      ],
-      "published": "2026-11-16T06:38:12Z",
-      "updated": "2026-11-16T06:38:12Z",
-      "abs_url": "https://arxiv.org/abs/2611.20613",
-      "pdf_url": "https://arxiv.org/pdf/2611.20613v1",
-      "fields": [
-        "quantum"
-      ]
-    },
-    {
-      "arxiv_id": "2611.20610",
-      "version": 1,
-      "title": "Quantum Sensor of Mechanical Vibrations",
-      "summary": "We report the use of a single trapped-ion motional mode as a probe of mechanical vibrations of the Paul trap structure. By exciting vibrations of the trap using an ultrasonic transducer mounted outside the vacuum chamber and probing the ion motion through motional sideband interactions, we observe a clear resonance response of the axial mode. We further demonstrate detection of trap vibrations with amplitudes as low as 0.6 picometers. These measurements show direct coupling between macroscopic mechanical motion and trapped-ion dynamics, providing a route toward vibration sensing using quantum control of motional states.",
-      "authors": [
-        "Mu Young Kim",
-        "H. C. J. Gan",
-        "Nigel Benjamin Lee Junsheng",
-        "Dzmitry Matsukevich"
-      ],
-      "primary_category": "quant-ph",
-      "categories": [
-        "quant-ph",
-        "physics.atom-ph"
-      ],
-      "published": "2026-11-16T06:33:58Z",
-      "updated": "2026-11-16T06:33:58Z",
-      "abs_url": "https://arxiv.org/abs/2611.20610",
-      "pdf_url": "https://arxiv.org/pdf/2611.20610v1",
-      "fields": [
-        "quantum"
-      ]
-    },
-    {
-      "arxiv_id": "2611.20520",
-      "version": 1,
-      "title": "Towards Inter-satellite Laser Metrology for Formation Flying Interferometry",
-      "summary": "Context. The direct detection and atmospheric characterization of terrestrial exoplanets has been highlighted as a key science focus by the US ASTRO2020 Decadal survey and the ESA Voyage 2050 plan. This will require a new generation of telescope which is able to meet the contrast requirements necessary to image a planet many orders of magnitude fainter than its host star - a technological feat which currently limits our observation capabilities. In the mid-infrared, the most viable solution has been shown to be a formation-flying nulling space interferometer. Aims. In this work, we present the initial prototype for an inter-spacecraft metrology system. This system is a sub-system of the Pyxis/SEIRIOS interferometer, a formation-flying interferometer which serves as a technology demonstrator for the LIFE mission. Methods. We have designed a multi-stage metrology system using three interferometric measurement techniques, covering varying distance resolution ranges. Digital Interferometric (DI) ranging provides the coarsest measurement, while a differential phase read-out provides sub-nm precision. Multi-wavelength interferometry is employed to overcome the phase ambiguity associated with the differential phase readout. Results. A single-wavelength electronic noise floor below 20 pm RMS over 10 s was measured by applying a common photodetector signal to both readout channels, a factor of 28 below the 560 pm requirement. For the multi-wavelength readout, the obtained electronic noise RMS was 556 nm at 10 second integration, decreasing to 200 nm below 3 second integration. The full optical measurement in laboratory air is currently limited by environmental path fluctuations. Conclusions. We demonstrate an initial prototype system for precision ranging between satellites for formation-flying nulling interferometers.",
-      "authors": [
-        "A. O. Chan",
-        "J. E. Debs",
-        "M. J. Ireland",
-        "C. P. Bandutunga"
-      ],
-      "primary_category": "astro-ph.IM",
-      "categories": [
-        "astro-ph.IM"
-      ],
-      "published": "2026-11-16T04:45:40Z",
-      "updated": "2026-11-16T04:45:40Z",
-      "abs_url": "https://arxiv.org/abs/2611.20520",
-      "pdf_url": "https://arxiv.org/pdf/2611.20520v1",
-      "fields": [
-        "space"
-      ]
+      "source": "api"
     }
   ]
 }

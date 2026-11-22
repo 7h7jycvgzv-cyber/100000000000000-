@@ -216,5 +216,23 @@ class PublishedDataTest(unittest.TestCase):
                     self.assertEqual(set(paper["scores"].values()), {1})
 
 
+    def test_removed_space_papers_stay_out(self):
+        # Basic-astronomy papers that the old space query picked up; removed on 2026-11-22.
+        doc = json.loads((ROOT / "data" / "seeds.json").read_text(encoding="utf-8"))
+        ids = {p["arxiv_id"] for p in doc["papers"]}
+        self.assertFalse(ids & {"2611.20754", "2611.20654", "2611.20636", "2611.20617"})
+
+
+class PageTest(unittest.TestCase):
+    """The Daily Alert sign-up must be the first thing on the page."""
+
+    def test_daily_alert_is_above_the_header(self):
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        body = html[html.index("<body>"):]
+        self.assertLess(body.index('class="alert-bar"'), body.index("<header>"))
+        self.assertGreaterEqual(body.count("cta-link"), 2)
+        self.assertIn("WAITLIST_ISSUE_URL", html)
+
+
 if __name__ == "__main__":
     unittest.main()

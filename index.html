@@ -135,15 +135,17 @@
     text-decoration: none; cursor: pointer; white-space: nowrap;
   }
   .btn.ghost { background: transparent; color: var(--accent); padding: 6px 12px; font-size: 13px; }
-  .cta { padding: 0 0 20px; }
-  .cta-box {
-    border: 1px solid var(--line); border-radius: 12px; background: var(--surface);
-    padding: 16px 20px; display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between;
+  .alert-bar { background: var(--accent); color: var(--accent-ink); }
+  .alert-bar .wrap {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 8px 16px; padding-block: 10px;
   }
-  .cta-box > div { min-width: 0; flex: 1 1 320px; }
-  .cta-box h2 { margin: 0 0 2px; font-size: 16px; }
-  .cta-box p { margin: 0; color: var(--muted); font-size: 13.5px; }
-  .cta-box .note { font-size: 12px; margin-top: 4px; }
+  .alert-bar .text { min-width: 0; flex: 1 1 300px; display: grid; gap: 1px; }
+  .alert-bar strong { font-size: 14.5px; font-weight: 700; }
+  .alert-bar .note { font-size: 12px; opacity: .85; }
+  .btn.invert { background: var(--accent-ink); color: var(--accent); border-color: var(--accent-ink); }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .btn.small { padding: 6px 12px; font-size: 13px; }
   .brief { display: grid; gap: 8px; justify-items: start; }
   .brief textarea {
     width: 100%; min-height: 160px; font-family: var(--mono); font-size: 12px; color: var(--ink);
@@ -168,32 +170,32 @@
 </style>
 </head>
 <body>
+<div class="alert-bar" role="region" aria-label="Daily Alert">
+  <div class="wrap">
+    <div class="text">
+      <strong data-i18n="ctaText"></strong>
+      <span class="note" data-i18n="ctaNote"></span>
+    </div>
+    <a class="btn invert cta-link" href="#" target="_blank" rel="noopener" data-i18n="ctaButton"></a>
+  </div>
+</div>
+
 <header>
   <div class="wrap">
     <div class="brand">
       <div class="mark"><span class="sweep" aria-hidden="true"></span><h1>Seed Radar</h1></div>
+      <div class="actions">
+      <a class="btn small cta-link" href="#" target="_blank" rel="noopener" data-i18n="ctaShort"></a>
       <div class="seg" role="group" aria-label="Language">
         <button type="button" data-lang="en" aria-pressed="true">English</button>
         <button type="button" data-lang="ja" aria-pressed="false">日本語</button>
+      </div>
       </div>
     </div>
     <p class="tagline" data-i18n="tagline"></p>
     <p class="meta" id="meta"></p>
   </div>
 </header>
-
-<section class="cta" aria-labelledby="cta-title">
-  <div class="wrap">
-    <div class="cta-box">
-      <div>
-        <h2 id="cta-title" data-i18n="ctaTitle"></h2>
-        <p data-i18n="ctaText"></p>
-        <p class="note" data-i18n="ctaNote"></p>
-      </div>
-      <a class="btn" id="cta-btn" href="#" target="_blank" rel="noopener" data-i18n="ctaButton"></a>
-    </div>
-  </div>
-</section>
 
 <div class="controls">
   <div class="wrap">
@@ -267,9 +269,9 @@
       abs: 'Abstract on arXiv',
       pdf: 'PDF',
       disclaimer: 'Analyses are written by an AI model from each paper\'s title and abstract only. Markets, customers and scores are estimates, not verified facts, and not investment advice. Read the paper before acting on anything here.',
-      ctaTitle: 'Daily Alert (Pro waitlist)',
-      ctaText: 'Seeds that score 10 or higher, sent to your email or Slack every day.',
-      ctaNote: 'Not live yet. Joining opens a short GitHub form; you need a GitHub account.',
+      ctaText: 'Daily Alert: get seeds that score 10 or higher by email or Slack, every day.',
+      ctaShort: 'Daily Alert',
+      ctaNote: 'Pro waitlist. Not live yet; joining opens a short GitHub form (GitHub account needed).',
       ctaButton: 'Get Daily High-Score Seeds',
       waitTitle: 'Daily Alert waitlist',
       waitBody: 'I would like to get daily high-score seeds from Seed Radar.\n\n- I am a: founder / investor / corporate / researcher / other\n- Preferred channel: email / Slack\n- Fields: space / quantum / AI\n- What would make this worth paying for?\n\nPlease do not post your email address here. This page is public. We will reply on this issue when the alert is ready.',
@@ -319,9 +321,9 @@
       abs: 'arXivで要旨を読む',
       pdf: 'PDF',
       disclaimer: '分析は、AIモデルが各論文の題名と要旨だけを読んで書いたものです。市場・顧客・スコアは推定で、確認された事実ではなく、投資の助言でもありません。ここにある内容をもとに動く前に、論文そのものを読んでください。',
-      ctaTitle: 'Daily Alert(Pro版ウェイトリスト)',
-      ctaText: 'スコア10以上の有望な種を、毎日メールかSlackで受け取る。',
-      ctaNote: 'まだ準備中です。登録するとGitHubの短いフォームが開きます(GitHubアカウントが必要です)。',
+      ctaText: 'Daily Alert:スコア10以上の有望な種を、毎日メールかSlackで受け取る。',
+      ctaShort: 'Daily Alert',
+      ctaNote: 'Pro版のウェイトリスト。まだ準備中です。登録するとGitHubの短いフォームが開きます(GitHubアカウントが必要です)。',
       ctaButton: 'Get Daily High-Score Seeds',
       waitTitle: 'Daily Alert ウェイトリスト',
       waitBody: 'Seed Radar の、スコアの高い種の毎日配信を希望します。\n\n- 立場: 起業家 / 投資家 / 企業の新規事業 / 研究者 / その他\n- 受け取りたい方法: メール / Slack\n- 分野: 宇宙 / 量子 / AI\n- どんな内容なら、お金を払う価値がありますか?\n\nここにメールアドレスは書かないでください(公開のページです)。配信の準備ができたら、このIssueに返信します。',
@@ -460,7 +462,7 @@
     document.querySelectorAll('[data-lang]').forEach(function (btn) {
       btn.setAttribute('aria-pressed', String(btn.getAttribute('data-lang') === state.lang));
     });
-    $('cta-btn').href = waitlistUrl();
+    document.querySelectorAll('.cta-link').forEach(function (a) { a.href = waitlistUrl(); });
   }
 
   function renderChips() {

@@ -76,6 +76,7 @@ python -m seedradar fetch --fields quantum ai --max 50
 
 `space` は、カテゴリだけで取ると基礎的な天文学に偏る。そのため、工学寄りのカテゴリ(信号処理、制御、画像、ロボット、通信、画像認識、観測機器)の中から、要旨に衛星・宇宙機のキーワードを含む論文を取る。
 検索式は `(cat:A OR cat:B ...) AND (abs:x OR abs:"y z" ...)`。条件は `seedradar/arxiv.py` の `FIELDS` で変える。
+arXiv の検索は、ハイフン入りの語などをゆるく解釈して、キーワードを含まない論文も返すことがある。そのため、キーワードのある分野は必要な数の4倍を取り、要旨にキーワードが本当に入っている論文だけを残す(RSS と同じ確認)。
 
 ### 出力(`papers.json`)
 
@@ -145,7 +146,7 @@ python -m seedradar fetch --fields quantum ai --max 50
 - 並べ替え: 合計スコア、市場規模、実現性、起業向き、新しい順
 - 各論文に、技術の要約、事業の種(顧客・市場・なぜ今か・参入障壁・市場に出るまで)、注意点、確信度、arXiv へのリンク
 - **Startup Brief のコピー**: 事業の種がある論文の「詳細」から、企画メモ(Markdown)を表示中の言語でクリップボードにコピーする。コピーできない環境では、文章を選択できる欄を出す
-- **Daily Alert のウェイトリスト**: 「Get Daily High-Score Seeds」ボタン。今は GitHub の Issue 作成画面(題名と本文を入力済み)を開く。`index.html` の `WAITLIST_FORM_URL` に Google フォームなどのURLを入れると、そちらに切り替わる。登録の数が、有料版の需要の目安になる
+- **Daily Alert のウェイトリスト**: ページの一番上の色付きの帯に「Get Daily High-Score Seeds」ボタン、ヘッダーにも「Daily Alert」ボタンを置いている。今は GitHub の Issue 作成画面(題名と本文を入力済み)を開く。`index.html` の `WAITLIST_FORM_URL` に Google フォームなどのURLを入れると、そちらに切り替わる。登録の数が、有料版の需要の目安になる
 - 明るい画面と暗い画面の両方に対応。スマホの幅でも崩れない
 - フッターに、AIによる推定であることの注意書きと、arXiv への謝辞を載せている
 
