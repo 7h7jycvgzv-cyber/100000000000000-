@@ -1,0 +1,95 @@
+# Seed Radar の毎日の自動更新。
+# arXiv の新着(平日)を取得 → Claude API で分析 → data/seeds.json を更新 → テスト → 反映。
+# 設定の手順は ARCHITECTURE.md の「毎日の自動更新」にある。
+name: Daily Seed Radar
+
+on:
+  schedule:
+    # 平日(月〜金)の 02:17 UTC = 日本時間 11:17。
+    # arXiv は米国東部時間の日〜木 20:00 に新着を告知する(冬は 01:00 UTC、夏は 00:00 UTC)。
+    # その1〜2時間後に動かす。GitHub の定期実行は混雑で数十分遅れることがある。
+    - cron: "17 2 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "反映の方法: pr(PRを作る)/ direct(mainに直接push)。空欄ならリポジトリ変数 RADAR_PUBLISH_MODE、それもなければ pr"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: daily-seed-radar
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      SEEDRADAR_MODEL: ${{ vars.SEEDRADAR_MODEL }}
+      SEEDRADAR_EFFORT: ${{ vars.SEEDRADAR_EFFORT }}
+      PUBLISH_MODE: ${{ inputs.publish || vars.RADAR_PUBLISH_MODE || 'pr' }}
+    steps:
+      - name: Check settings
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "::error::Repository secret ANTHROPIC_API_KEY is not set. See ARCHITECTURE.md (毎日の自動更新)."
+            exit 1
+          fi
+          case "$PUBLISH_MODE" in
+            pr|direct) ;;
+            *) echo "::error::RADAR_PUBLISH_MODE must be 'pr' or 'direct' (got '$PUBLISH_MODE')"; exit 1 ;;
+          esac
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Test (before update)
+        run: python -m unittest
+
+      - name: Fetch and analyze
+        id: radar
+        run: python -m seedradar daily --summary "$RUNNER_TEMP/summary.md"
+
+      - name: Test (after update)
+        if: steps.radar.outputs.changed == 'true'
+        run: python -m unittest
+
+      - name: Publish
+        if: steps.radar.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          day=$(date -u +%F)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git commit -m "Seed Radar: ${day} の新着論文を分析" -m "Automated by .github/workflows/daily-radar.yml"
+
+          if [ "$PUBLISH_MODE" = "direct" ]; then
+            git push origin HEAD:main
+            echo "Pushed to main." >> "$GITHUB_STEP_SUMMARY"
+          else
+            branch="radar/daily-${day}-${GITHUB_RUN_ID}"
+            git push origin "HEAD:refs/heads/${branch}"
+            url=$(gh pr create --base main --head "$branch" \
+              --title "Seed Radar: ${day} の新着論文" \
+              --body-file "$RUNNER_TEMP/summary.md")
+            echo "Opened ${url}" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Job summary
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/summary.md" ]; then cat "$RUNNER_TEMP/summary.md" >> "$GITHUB_STEP_SUMMARY"; fi

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -112,6 +113,102 @@ def cmd_remove(args: argparse.Namespace) -> int:
     return 0
 
 
+def _analysis_path(directory: Path, day: str) -> Path:
+    """data/analysis/DAY.json, or DAY-2.json, DAY-3.json ... when that day already has a file."""
+    path = directory / f"{day}.json"
+    n = 2
+    while path.exists():
+        path = directory / f"{day}-{n}.json"
+        n += 1
+    return path
+
+
+def _set_output(name: str, value: str) -> None:
+    """Expose a value to later GitHub Actions steps (no-op outside Actions)."""
+    target = os.environ.get("GITHUB_OUTPUT")
+    if target:
+        with open(target, "a", encoding="utf-8") as f:
+            f.write(f"{name}={value}\n")
+
+
+def build_summary(day: str, papers: list[dict], analysis: dict, failures: list[str], merged: dict | None) -> str:
+    analyzed = {p["arxiv_id"]: p for p in analysis["papers"]}
+    lines = [f"## Seed Radar daily update {day}", ""]
+    lines.append(f"- New papers: {len(papers)}")
+    lines.append(f"- Analyzed: {len(analyzed)} (with business seeds: "
+                 f"{sum(1 for p in analyzed.values() if p['business_seeds'])})")
+    if merged is not None:
+        lines.append(f"- Papers on the dashboard: {merged['count']}")
+    if analyzed:
+        lines += ["", "| Total | Field | Paper | Top seed |", "|---|---|---|---|"]
+        rows = []
+        for paper in papers:
+            entry = analyzed.get(paper["arxiv_id"])
+            if entry is None:
+                continue
+            total = sum(entry["scores"].values())
+            seed = entry["business_seeds"][0]["title"]["en"] if entry["business_seeds"] else "(no seed)"
+            title = paper["title"].replace("|", "/")[:80]
+            rows.append((total, f"| {total} | {', '.join(paper['fields'])} | "
+                                f"[{title}]({paper['abs_url']}) | {seed.replace('|', '/')} |"))
+        lines += [row for _, row in sorted(rows, key=lambda r: -r[0])]
+    if failures:
+        lines += ["", "### Not analyzed (retried on the next run)", ""] + [f"- {f}" for f in failures]
+    lines += ["", "Analyses are model estimates from titles and abstracts only. "
+              "Review before merging if anything looks off."]
+    return "\n".join(lines) + "\n"
+
+
+def cmd_daily(args: argparse.Namespace) -> int:
+    """fetch -> pending -> analyze (Claude API) -> validate -> merge. Writes only data/ files."""
+    from . import analyze
+
+    _set_output("changed", "false")
+    day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+    try:
+        fetched = fetch_all(list(FIELDS), max_results=args.per_field, source=args.source)
+    except (ArxivError, ValueError) as e:
+        print(f"error: fetch failed: {e}", file=sys.stderr)
+        return 1
+    if not fetched:
+        print("No papers were fetched; nothing to do.")
+        return 0
+    papers_doc = build_payload(fetched, list(FIELDS))
+    _write_json(args.papers, papers_doc)
+    print(f"fetched {len(fetched)} papers ({papers_doc['source']}) -> {args.papers}")
+
+    seeds_doc = _read_json(args.seeds) if Path(args.seeds).exists() else None
+    pending = seeds.pending_papers(papers_doc, seeds_doc)[: args.limit]
+    if not pending:
+        print("No new papers to analyze.")
+        if args.summary:
+            Path(args.summary).write_text(f"## Seed Radar daily update {day}\n\nNo new papers.\n", encoding="utf-8")
+        return 0
+
+    print(f"analyzing {len(pending)} papers with {args.model} (effort {args.effort})")
+    analysis, failures = analyze.analyze_papers(
+        pending, day, model=args.model, effort=args.effort, use_fallbacks=not args.no_fallbacks
+    )
+    merged = None
+    if analysis["papers"]:
+        path = _analysis_path(Path(args.analysis_dir), day)
+        _write_json(path, analysis)
+        merged = seeds.merge(papers_doc, analysis, seeds_doc)
+        _write_json(args.seeds, merged)
+        print(f"wrote {path}; {args.seeds} now has {merged['count']} papers")
+        _set_output("changed", "true")
+
+    summary = build_summary(day, pending, analysis, failures, merged)
+    if args.summary:
+        Path(args.summary).write_text(summary, encoding="utf-8")
+    print(summary)
+    if not analysis["papers"]:
+        print("error: no paper could be analyzed", file=sys.stderr)
+        return 1
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="seedradar", description="arXiv papers -> business seeds")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -145,6 +242,20 @@ def main(argv: list[str] | None = None) -> int:
     remove.add_argument("arxiv_ids", nargs="+")
     remove.add_argument("--seeds", default=DEFAULT_SEEDS)
     remove.set_defaults(func=cmd_remove)
+
+    daily = sub.add_parser("daily", help="fetch, analyze new papers with the Claude API, and update seeds.json")
+    daily.add_argument("--per-field", type=int, default=DEFAULT_PER_FIELD, help="papers per field to fetch")
+    daily.add_argument("--limit", type=int, default=15, help="at most this many papers are analyzed per run")
+    daily.add_argument("--source", choices=SOURCES, default="auto")
+    daily.add_argument("--model", default=os.environ.get("SEEDRADAR_MODEL") or "claude-opus-5-5")
+    daily.add_argument("--effort", default=os.environ.get("SEEDRADAR_EFFORT") or "medium",
+                       choices=["low", "medium", "high", "xhigh", "max"])
+    daily.add_argument("--no-fallbacks", action="store_true", help="do not use server-side refusal fallbacks")
+    daily.add_argument("--papers", default=DEFAULT_PAPERS)
+    daily.add_argument("--seeds", default=DEFAULT_SEEDS)
+    daily.add_argument("--analysis-dir", default="data/analysis")
+    daily.add_argument("--summary", help="also write a Markdown summary to this file")
+    daily.set_defaults(func=cmd_daily)
 
     args = parser.parse_args(argv)
     return args.func(args)

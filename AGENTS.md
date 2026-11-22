@@ -29,17 +29,19 @@ Claude Code と Codex の共通ルールです。両方のAIがこのファイ�
 ### Seed Radar の更新
 
 「Seed Radar を更新して」と言われたら(Claude Code では `/seed-radar`)、`seedradar/prompts/update.md` の手順どおりに進める。
-論文の分析は、外部のLLM APIを呼ばずに、エージェント自身が読んで書く。
+エージェントが手で更新するときは、外部のLLM APIを呼ばずに、エージェント自身が読んで書く。
+
+毎日の自動更新は `.github/workflows/daily-radar.yml`(GitHub Actions + Claude API)。分析の基準は、手でも自動でも `seedradar/prompts/criteria.md` を使う。基準を変えるときはこのファイルを直す。
 
 ## 開発のルール
 
-- 1つの作業につき1つのブランチ。`main` に直接pushしない
+- 1つの作業につき1つのブランチ。`main` に直接pushしない(例外: 毎日の自動更新で、オーナーが `RADAR_PUBLISH_MODE=direct` にしたときの `data/` のコミット)
 - 変更はPRで出し、オーナーがマージする
 - Claude Code と Codex が同じブランチを同時に編集しない
 - コードにはテストをつける。pushの前に `python -m unittest` を通す
 - テストは外部のネットワークやAPIに依存させない(固定のデータを使う)
 - `data/seeds.json` は手で書き換えない。`python -m seedradar merge` で作る
-- 依存ライブラリは必要なものだけ。追加したら理由を書く
+- 依存ライブラリは必要なものだけ。追加したら理由を書く(`anthropic` は毎日の自動更新の分析だけで使う。ほかのコードとテストは標準ライブラリだけで動かす)
 - コミットメッセージは日本語でよい
 
 ## 絶対にやらないこと
