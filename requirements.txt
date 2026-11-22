@@ -1,0 +1,3 @@
+# Only the daily automation (python -m seedradar daily) needs this: it calls the Claude API.
+# fetch / pending / validate / merge / remove and the tests use the standard library only.
+anthropic

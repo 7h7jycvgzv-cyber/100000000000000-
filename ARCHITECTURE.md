@@ -36,28 +36,70 @@ data/
 seedradar/
   arxiv.py             取得: URL組み立て、Atomフィードの解析、リトライ、分野の定義
   seeds.py             分析の検証、seeds.json への統合、未分析の論文の一覧
-  cli.py               コマンド: fetch / pending / validate / merge / remove
-  prompts/update.md    更新の手順書(分析の基準と出力の形)
+  analyze.py           毎日の自動実行での分析(Claude API)
+  cli.py               コマンド: fetch / pending / validate / merge / remove / daily
+  prompts/criteria.md  分析の基準(手での分析と自動実行で共通)
+  prompts/update.md    エージェントが手で更新するときの手順書
 .claude/commands/seed-radar.md   Claude Code の /seed-radar コマンド
+.github/workflows/daily-radar.yml  毎日の自動更新
+requirements.txt     自動更新だけが使う依存(anthropic)
 tests/                 テスト(ネットワークに依存しない)
 log/                   開発の記録ページ
 mock/                  看護記録の要約の見本
 ```
 
-## 毎日の更新
+## 毎日の自動更新(GitHub Actions)
 
-Claude Code では `/seed-radar`、Codex では「Seed Radar を更新して」と指示する。エージェントは次を実行する。
+`.github/workflows/daily-radar.yml` が、平日の 02:17 UTC(日本時間 11:17)に次を実行する。手動でも実行できる(Actions タブ → Daily Seed Radar → Run workflow)。
 
 ```
-python -m seedradar fetch                              # 最新の論文を取得(各分野5本)
-python -m seedradar pending                            # まだ分析していない論文を表示
-(エージェントが data/analysis/DATE.json を書く)
-python -m seedradar validate data/analysis/DATE.json   # 形を検証
-python -m seedradar merge data/analysis/DATE.json      # seeds.json に統合
+1. python -m unittest                      更新前のテスト
+2. python -m seedradar daily               取得 → 未分析の抽出 → Claude API で分析 → 検証 → seeds.json に統合
+3. python -m unittest                      更新後のテスト(公開データの検証を含む)
+4. data/ だけをコミットして反映            PR を作る(既定)か、main に直接 push する
+```
+
+- **時刻**: arXiv は米国東部時間の日〜木 20:00 に新着を告知する(冬は 01:00 UTC、夏時間は 00:00 UTC)。日本時間 9:00(00:00 UTC)だと冬は告知前になるので、余裕をみて 02:17 UTC にしている。週末は新着がないので動かさない
+- **取得**: arXiv API が 429 などで答えないときは RSS に切り替わる(上の「1. 取得」)。GitHub のランナーも共有IPなので、429 は起こりうる
+- **分析**: `seedradar/analyze.py` が論文1本につき1回 Claude API を呼ぶ
+  - モデルは `claude-opus-5-5`、effort は `medium`(リポジトリ変数で変えられる)
+  - 指示は `seedradar/prompts/criteria.md`(エージェントが手で分析するときと同じ基準)
+  - 出力は JSON スキーマで形を固定し、受け取ったあと `validate_entry` で検証する。だめなら1回だけやり直す
+  - 安全上の理由でモデルが断ったときは、API 側で推奨の代わりのモデルに切り替える(`fallbacks: "default"`)。それでも断られた論文は飛ばし、次の回にもう一度試す
+  - 種がない論文は、スコアをすべて1にそろえる(基準どおり)
+- **何も変わらない日**: 新着がない、またはすべて分析済みなら、コミットも PR も作らない
+- **失敗したとき**: 取得の失敗、または1本も分析できなかったときは、ワークフローが失敗になる(GitHub から通知が届く)。公開データは変わらない
+- **反映**: `data/` 以外のファイルはコミットしない
+  - `pr`(既定): `radar/daily-日付-実行ID` ブランチを作り、PR を出す。PR の本文に、分析した論文とスコアの表が入る。オーナーがマージすると公開される
+  - `direct`: main に直接 push する。完全に自動になるが、分析を人が見ないまま公開される
+
+### 費用の目安
+
+- Claude API の利用料がかかる(Pro プランなどの契約とは別の、従量課金)
+- 1日最大15本。1本あたり入力は約2千トークン、出力は思考を含めて数千トークンなので、Claude Opus 5.5(入力 $4 / 出力 $20、100万トークンあたり)で **1日 1ドル前後、月 20〜25ドル前後** が目安(実際の値は Console の使用量で確認する)
+- 費用を下げるなら、リポジトリ変数 `SEEDRADAR_MODEL` に `claude-sonnet-5-5` を入れる(分析の質は確認が必要)
+- Console で、月の利用上限を必ず設定する
+
+### オーナーが設定すること
+
+| どこで | 何を | 必須 |
+|---|---|---|
+| Anthropic Console | API キーを作る。月の利用上限を設定する | 必須 |
+| GitHub → Settings → Secrets and variables → Actions → Secrets | `ANTHROPIC_API_KEY` に API キーを入れる | 必須 |
+| GitHub → Settings → Actions → General → Workflow permissions | 「Read and write permissions」と「Allow GitHub Actions to create and approve pull requests」をオンにする | `pr` で必須 |
+| GitHub → Settings → Secrets and variables → Actions → Variables | `RADAR_PUBLISH_MODE` = `pr` または `direct` | 任意(既定は `pr`) |
+| 同上 | `SEEDRADAR_MODEL`(既定 `claude-opus-5-5`)、`SEEDRADAR_EFFORT`(既定 `medium`) | 任意 |
+
+### 手動で同じことをする
+
+```
+pip install -r requirements.txt
+export ANTHROPIC_API_KEY=...        # リポジトリには書かない
+python -m seedradar daily
 python -m unittest
 ```
 
-PRをマージすると、GitHub Pages に反映される。
+API キーを使わずに、Claude Code や Codex に手で分析させる方法も残している(`/seed-radar`、手順は `seedradar/prompts/update.md`)。
 
 ## 1. 取得
 
@@ -169,15 +211,8 @@ python -m unittest
 | M2 | 抽出の手順と、最初の15本の分析 | 完了 |
 | M3 | 検証・統合 | 完了 |
 | M4 | 公開ページ | 完了 |
-| M5 | 毎日の更新を自動にする | 次 |
+| M5 | 毎日の更新を自動にする(GitHub Actions + Claude API) | 完了(初回の実行は未確認) |
 | M6 | アクセス解析、週1回のまとめ | |
-
-### M5 について
-
-GitHub Actions だけでは自動にできない(抽出にエージェントが必要なため)。候補は2つ。
-
-1. Claude Code のクラウドのスケジュール実行で、毎日 `/seed-radar` を動かす(追加の課金なし。PRのマージは人がやる)
-2. LLM API を使って GitHub Actions で全自動にする(APIの費用がかかる)
 
 ## 今の限界
 
