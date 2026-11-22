@@ -9,6 +9,34 @@ from seedradar import arxiv, cli
 
 FIXTURE = (Path(__file__).parent / "fixtures" / "feed.xml").read_bytes()
 
+
+def _entry(arxiv_id, summary):
+    return f"""<entry>
+    <id>http://arxiv.org/abs/{arxiv_id}v1</id>
+    <title>Paper {arxiv_id}</title>
+    <summary>{summary}</summary>
+    <published>2026-01-01T00:00:00Z</published>
+    <updated>2026-01-01T00:00:00Z</updated>
+    <category term="astro-ph.IM" scheme="http://arxiv.org/schemas/atom"/>
+    <author><name>A</name></author>
+  </entry>"""
+
+
+def _feed(*entries):
+    return ('<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom" '
+            'xmlns:arxiv="http://arxiv.org/schemas/atom">' + "".join(entries) + "</feed>").encode()
+
+
+# Made-up results: only the second paper really mentions a space keyword.
+SPACE_FEED = _feed(
+    _entry("2601.00020", "Exoplanet atmospheres observed from the ground."),
+    _entry("2601.00021", "A pose estimator for a spacecraft approaching a target."),
+)
+SPACE_FEED_TWO_HITS = _feed(
+    _entry("2601.00022", "Remote sensing of crops."),
+    _entry("2601.00023", "A cubesat radio."),
+)
+
 ERROR_FEED = b"""<?xml version='1.0' encoding='UTF-8'?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <entry>
@@ -45,6 +73,10 @@ class BuildSearchQueryTest(unittest.TestCase):
         query = arxiv.build_search_query(("cs.RO", "eess.SP"), ("spacecraft", "remote sensing"))
         self.assertEqual(query, '(cat:cs.RO OR cat:eess.SP) AND (abs:spacecraft OR abs:"remote sensing")')
 
+    def test_hyphenated_keywords_are_quoted(self):
+        query = arxiv.build_search_query(("cs.RO",), ("on-orbit", "cubesat"))
+        self.assertEqual(query, '(cat:cs.RO) AND (abs:"on-orbit" OR abs:cubesat)')
+
     def test_keyword_with_quote_is_rejected(self):
         with self.assertRaises(ValueError):
             arxiv.build_search_query(("cs.RO",), ('bad"word',))
@@ -57,6 +89,22 @@ class BuildSearchQueryTest(unittest.TestCase):
         query = urllib.parse.parse_qs(urllib.parse.urlparse(url).query)["search_query"][0]
         self.assertIn(") AND (", query)
         self.assertIn("abs:spacecraft", query)
+
+    def test_api_results_are_checked_against_keywords(self):
+        # arXiv's search can return papers that do not mention any keyword; they are dropped.
+        urls = []
+        papers = arxiv.fetch_field("space", 5, get=lambda url: urls.append(url) or SPACE_FEED, source="api")
+        self.assertEqual([p.arxiv_id for p in papers], ["2601.00021"])
+        query = urllib.parse.parse_qs(urllib.parse.urlparse(urls[0]).query)
+        self.assertEqual(query["max_results"], [str(5 * arxiv.KEYWORD_OVERFETCH)])
+
+    def test_api_keyword_results_are_capped(self):
+        papers = arxiv.fetch_field("space", 1, get=lambda url: SPACE_FEED_TWO_HITS, source="api")
+        self.assertEqual(len(papers), 1)
+
+    def test_fields_without_keywords_are_not_filtered(self):
+        papers = arxiv.fetch_field("quantum", 2, get=lambda url: FIXTURE, source="api")
+        self.assertEqual(len(papers), 2)
 
     def test_fetch_field_sends_keywords(self):
         urls = []

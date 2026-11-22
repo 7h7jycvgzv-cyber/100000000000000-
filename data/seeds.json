@@ -1,14 +1,19 @@
 {
-  "updated_at": "2026-11-17T05:44:32Z",
+  "updated_at": "2026-11-22T01:50:01Z",
   "source": "arXiv API",
   "fields": {
     "space": {
-      "label_en": "Space & Astrophysics",
+      "label_en": "Space Technology",
       "label_ja": "宇宙開発",
       "categories": [
-        "astro-ph.EP",
         "astro-ph.IM",
-        "physics.space-ph"
+        "physics.space-ph",
+        "eess.SP",
+        "eess.SY",
+        "eess.IV",
+        "cs.RO",
+        "cs.NI",
+        "cs.CV"
       ]
     },
     "quantum": {
@@ -28,8 +33,338 @@
       ]
     }
   },
-  "count": 15,
+  "count": 16,
   "papers": [
+    {
+      "arxiv_id": "2611.26065",
+      "version": 1,
+      "title": "Domain-Aware Conformal Prediction for Trustworthy Spacecraft Pose Estimation under Sim-to-Real Shift",
+      "authors": [
+        "Nidhal Eddine Chenni",
+        "Arunkumar Rathinam",
+        "Djamila Aouada"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-11-19T13:08:51Z",
+      "abs_url": "https://arxiv.org/abs/2611.26065",
+      "pdf_url": "https://arxiv.org/pdf/2611.26065v1",
+      "fields": [
+        "space"
+      ],
+      "analyzed_at": "2026-11-22",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "Conformal prediction for estimating the pose of a target spacecraft from images: the model outputs a set of possible poses that should contain the true pose with a chosen probability.",
+        "ja": "画像から相手の宇宙機の姿勢(位置と向き)を推定するときに、コンフォーマル予測を使う手法。モデルは「真の姿勢を、決めた確率で含むはず」の姿勢の候補の集合を出す。"
+      },
+      "breakthrough": {
+        "en": "Calibrating only on synthetic renderings silently breaks that guarantee on real images. Calibrating on synthetic images translated to look real restores it without any labelled real images, and cuts silent failures from up to 43.5% to at most 3.3% of test images on the SPEED+ dataset.",
+        "ja": "CGの画像だけで調整すると、実際の画像では保証が気づかないうちに崩れる。CGを本物らしく見せる変換をかけた画像で調整すると、ラベル付きの実画像なしで保証が戻る。SPEED+データセットで、気づかない失敗が最大43.5%から3.3%以下に減った。"
+      },
+      "business_seeds": [
+        {
+          "title": {
+            "en": "Trust layer for vision-based navigation in on-orbit servicing",
+            "ja": "軌道上サービス向け、画像による航法の「信頼度」レイヤー"
+          },
+          "customer": {
+            "en": "Companies doing on-orbit servicing, life extension, inspection and active debris removal, which need a spacecraft to approach another one autonomously.",
+            "ja": "軌道上での修理・寿命延長・点検・デブリ除去を行う企業。宇宙機が別の宇宙機に自律的に近づく必要がある。"
+          },
+          "market": {
+            "en": "Guidance, navigation and perception software for proximity operations. A small but growing market, paid for by servicing operators and the agencies that fund them.",
+            "ja": "近接運用のための誘導・航法・認識のソフトウェア。小さいが伸びている市場で、お金を払うのは軌道上サービスの事業者と、それを支援する宇宙機関。"
+          },
+          "why_now": {
+            "en": "Servicing and debris-removal missions are moving from demonstration to commercial contracts, and an approach that fails silently can destroy both spacecraft.",
+            "ja": "軌道上サービスとデブリ除去のミッションが、実証から商用の契約へ移りつつある。気づかないまま失敗する接近は、両方の宇宙機を壊しかねない。"
+          },
+          "time_to_market": "3-10y",
+          "moat": {
+            "en": "Flight heritage and acceptance by mission assurance teams. Hard to earn, but the largest servicing companies may build this in-house.",
+            "ja": "宇宙での動作実績と、ミッションの安全審査で認められること。手に入れるのは難しいが、大手の軌道上サービス企業は自社で作る可能性がある。"
+          }
+        }
+      ],
+      "scores": {
+        "market_size": 3,
+        "feasibility": 3,
+        "startup_fit": 3
+      },
+      "confidence": "medium",
+      "caveats": {
+        "en": "Tested on one benchmark dataset, not in flight. Coverage is restored only for miscoverage levels of 0.1 and above, which may be looser than safety-critical operations need.",
+        "ja": "1つのベンチマークのデータセットでの結果で、宇宙での試験ではない。保証が戻るのは、外れてよい確率を10%以上に設定した場合だけで、安全が最優先の運用には甘すぎる可能性がある。"
+      }
+    },
+    {
+      "arxiv_id": "2611.25984",
+      "version": 1,
+      "title": "A Brief Overview of Non-Terrestrial Networks (Updated 2026)",
+      "authors": [
+        "Jose Alberto Hernandez",
+        "Pedro Reviriego"
+      ],
+      "primary_category": "cs.NI",
+      "categories": [
+        "cs.NI"
+      ],
+      "published": "2026-11-19T12:07:07Z",
+      "abs_url": "https://arxiv.org/abs/2611.25984",
+      "pdf_url": "https://arxiv.org/pdf/2611.25984v1",
+      "fields": [
+        "space"
+      ],
+      "analyzed_at": "2026-11-22",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "An updated overview of satellite communications for non-terrestrial networks (NTN): propagation, link budgets, spectrum reuse, phased arrays, and the state of constellations and direct-to-device services as of November 2026.",
+        "ja": "非地上系ネットワーク(NTN、衛星などを使う通信網)の衛星通信をまとめた解説の2026年11月版。電波の伝わり方、回線の計算、周波数の再利用、フェーズドアレイ、コンステレーションとスマホ直結サービスの現状を扱う。"
+      },
+      "breakthrough": {
+        "en": "A review, not new technology. It corrects equations from the 2023 version and separates operator announcements from independent measurements of what constellations and direct-to-device services actually deliver.",
+        "ja": "新しい技術ではなく、まとめの論文。2023年版の式を直し、コンステレーションやスマホ直結サービスについて、事業者の発表と第三者による実測を分けて整理している。"
+      },
+      "business_seeds": [
+        {
+          "title": {
+            "en": "Independent performance benchmarks for satellite connectivity",
+            "ja": "衛星通信の性能を第三者として測るベンチマーク"
+          },
+          "customer": {
+            "en": "Enterprises, governments, maritime and aviation operators choosing between satellite providers, and investors comparing constellations.",
+            "ja": "衛星通信の事業者を選ぶ企業・政府・船舶や航空の運航者。コンステレーションどうしを比べたい投資家。"
+          },
+          "market": {
+            "en": "Data and advisory for satellite connectivity buyers. A niche, but buyers are large and the gap between announced and measured performance is the stated problem.",
+            "ja": "衛星通信を買う側のためのデータと助言。ニッチだが、買い手は大きく、「発表と実測の差」がまさに論文の指摘する問題。"
+          },
+          "why_now": {
+            "en": "Many constellations and direct-to-device services are launching at once, and buyers cannot verify the claims.",
+            "ja": "多くのコンステレーションとスマホ直結サービスが同時に立ち上がっていて、買い手は宣伝どおりかを確かめられない。"
+          },
+          "time_to_market": "now",
+          "moat": {
+            "en": "A growing dataset of measurements from many locations and terminals. Weak at the start; anyone with terminals can measure.",
+            "ja": "多くの場所と端末で積み上げた実測データ。最初は弱く、端末を持っていれば誰でも測れる。"
+          }
+        }
+      ],
+      "scores": {
+        "market_size": 3,
+        "feasibility": 4,
+        "startup_fit": 2
+      },
+      "confidence": "low",
+      "caveats": {
+        "en": "The seed comes from a gap the review describes, not from a new result. The paper itself is educational; the business case rests on whether buyers pay for third-party data.",
+        "ja": "この種は、まとめの論文が指摘している空白から考えたもので、新しい研究成果から出たものではない。事業として成り立つかは、買い手が第三者のデータにお金を払うかどうかにかかっている。"
+      }
+    },
+    {
+      "arxiv_id": "2611.25837",
+      "version": 1,
+      "title": "Software-Defined Internet Integration of Satellite Networks (SDISN)",
+      "authors": [
+        "Michael Menth",
+        "Moritz Flüchter",
+        "Jens Haala"
+      ],
+      "primary_category": "cs.NI",
+      "categories": [
+        "cs.NI"
+      ],
+      "published": "2026-11-19T09:52:15Z",
+      "abs_url": "https://arxiv.org/abs/2611.25837",
+      "pdf_url": "https://arxiv.org/pdf/2611.25837v1",
+      "fields": [
+        "space"
+      ],
+      "analyzed_at": "2026-11-22",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "SDISN: an architecture for carrying Internet traffic over a satellite network with inter-satellite links, where a central controller keeps forwarding information up to date as satellites move and ground terminals change their serving satellite.",
+        "ja": "SDISN:衛星間リンクでつながった衛星網に、インターネットの通信を流すための設計。衛星が動いて、地上の端末がつながる衛星が次々に変わっても、中央のコントローラーが転送の情報を更新し続ける。"
+      },
+      "breakthrough": {
+        "en": "Keeps satellites simple and user terminals out of the routing system, supports traffic that must stay inside the constellation for security, and adds options to cut the latency of routing through a fixed home gateway.",
+        "ja": "衛星側の処理を単純に保ち、利用者の端末を経路制御の仕組みから外したまま動く。安全上の理由でコンステレーションの外に出してはいけない通信にも対応し、決まった拠点を経由することで生じる遅延を減らす方法も示している。"
+      },
+      "business_seeds": [
+        {
+          "title": {
+            "en": "Network control software for constellations with inter-satellite links",
+            "ja": "衛星間リンクを持つコンステレーション向けの、ネットワーク制御ソフトウェア"
+          },
+          "customer": {
+            "en": "New constellation operators that cannot build a full networking stack themselves, and government or defense users who need traffic kept off terrestrial networks.",
+            "ja": "ネットワークの仕組みを一から自前で作れない新しいコンステレーション事業者。地上の通信網を通さずに通信したい政府・防衛の利用者。"
+          },
+          "market": {
+            "en": "Ground and space networking software for satellite operators. Valuable but concentrated in a small number of operators.",
+            "ja": "衛星事業者向けの、地上と宇宙をつなぐネットワークのソフトウェア。価値は高いが、顧客は少数の事業者に集中している。"
+          },
+          "why_now": {
+            "en": "More constellations are adding laser inter-satellite links, and sovereign constellations want secure routing that does not depend on foreign ground infrastructure.",
+            "ja": "レーザーの衛星間リンクを載せるコンステレーションが増えている。自国のコンステレーションを持ちたい国は、外国の地上設備に頼らない安全な経路を求めている。"
+          },
+          "time_to_market": "3-10y",
+          "moat": {
+            "en": "Integration with an operator's flight software and ground segment, plus security certifications. The largest operators build their own networks.",
+            "ja": "事業者の衛星側ソフトや地上設備との統合と、セキュリティの認証。最大手の事業者は自前のネットワークを作っている。"
+          }
+        }
+      ],
+      "scores": {
+        "market_size": 3,
+        "feasibility": 3,
+        "startup_fit": 2
+      },
+      "confidence": "medium",
+      "caveats": {
+        "en": "An architecture proposal. The abstract gives no implementation or measured performance, and selling to a few large operators is slow.",
+        "ja": "設計の提案の段階。要旨には、実装や性能の測定結果がない。少数の大手事業者に売るのは時間がかかる。"
+      }
+    },
+    {
+      "arxiv_id": "2611.25724",
+      "version": 1,
+      "title": "Verifying Before Enhancing: Target Evidence Chain Verification for Infrared Small Target Detection",
+      "authors": [
+        "Jiayi Zuo",
+        "Songwei Pei",
+        "Shuhuai Wang",
+        "Yifei Wu",
+        "Shangguang Wang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-11-19T08:40:16Z",
+      "abs_url": "https://arxiv.org/abs/2611.25724",
+      "pdf_url": "https://arxiv.org/pdf/2611.25724v1",
+      "fields": [
+        "space"
+      ],
+      "analyzed_at": "2026-11-22",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "VBE-UNet: a network for detecting tiny targets in infrared images that checks whether each candidate is backed by supporting evidence instead of trusting response strength alone.",
+        "ja": "VBE-UNet:赤外線画像の中の小さな目標を検出するネットワーク。反応の強さだけを信じず、それぞれの候補に裏付けとなる証拠があるかを確かめる。"
+      },
+      "breakthrough": {
+        "en": "Higher detection accuracy and fewer false alarms than prior methods on three public infrared small-target datasets.",
+        "ja": "赤外線の小目標検出の3つの公開データセットで、これまでの手法より検出精度が高く、誤検出が少なかった。"
+      },
+      "business_seeds": [
+        {
+          "title": {
+            "en": "Onboard infrared detection for satellites and drones",
+            "ja": "衛星やドローンに載せる、赤外線の目標検出"
+          },
+          "customer": {
+            "en": "Earth-observation and space situational awareness companies, wildfire and maritime monitoring services, and drone makers.",
+            "ja": "地球観測や宇宙状況監視の企業、山火事や海上の監視サービス、ドローンのメーカー。"
+          },
+          "market": {
+            "en": "Infrared monitoring analytics. Sizeable, but much of the demand comes from defense and early warning.",
+            "ja": "赤外線による監視の解析。規模はあるが、需要の多くは防衛と早期警戒から来る。"
+          },
+          "why_now": {
+            "en": "More small satellites carry infrared sensors, and processing in orbit to send down only detections saves scarce downlink.",
+            "ja": "赤外線センサーを積む小型衛星が増えている。軌道上で処理して検出結果だけを送れば、限られた地上への通信量を節約できる。"
+          },
+          "time_to_market": "1-3y",
+          "moat": {
+            "en": "Weak on the model alone: results are on public benchmarks and the method can be reproduced. Labelled data from a customer's own sensor would be the moat.",
+            "ja": "モデルだけでは弱い。結果は公開のベンチマークで、手法は再現できる。参入障壁になるのは、顧客自身のセンサーで集めたラベル付きのデータ。"
+          }
+        }
+      ],
+      "scores": {
+        "market_size": 3,
+        "feasibility": 4,
+        "startup_fit": 2
+      },
+      "confidence": "medium",
+      "caveats": {
+        "en": "Benchmark results only; no onboard or flight test. Early warning and surveillance are dual-use applications with export controls and ethical limits that narrow who a startup can sell to.",
+        "ja": "ベンチマークでの結果だけで、衛星に載せた試験はない。早期警戒や監視は軍事にも使える用途で、輸出の規制や倫理上の制約があり、スタートアップが売れる相手は限られる。"
+      }
+    },
+    {
+      "arxiv_id": "2611.25665",
+      "version": 1,
+      "title": "GNetSS: Towards Learning GNSS Corrections without Ground Truth",
+      "authors": [
+        "JiaXu Chee",
+        "Simon Denman",
+        "Fahira Afzal Maken",
+        "Qingqing Cheng",
+        "Amir Khodabandeh",
+        "Milad Ramezani"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-11-19T07:44:20Z",
+      "abs_url": "https://arxiv.org/abs/2611.25665",
+      "pdf_url": "https://arxiv.org/pdf/2611.25665v1",
+      "fields": [
+        "space"
+      ],
+      "analyzed_at": "2026-11-22",
+      "analyzer": "Claude Code (title and abstract only)",
+      "technology": {
+        "en": "GNetSS: a self-supervised method that learns corrections for satellite-navigation (GNSS) signals from the consistency of the measurements themselves, with no ground-truth positions needed for training.",
+        "ja": "GNetSS:衛星測位(GNSS)の信号の補正を、測定値どうしの整合性から自己教師ありで学ぶ手法。学習に正解の位置データが要らない。"
+      },
+      "breakthrough": {
+        "en": "Improves robustness of single-receiver positioning in open-sky, urban and forested environments, and cuts the maximum 3D error by over 50% compared with standard single point positioning.",
+        "ja": "開けた場所、都市部、森の中で、受信機1台での測位が安定した。最大の3次元誤差は、標準的な単独測位と比べて50%以上減った。"
+      },
+      "business_seeds": [
+        {
+          "title": {
+            "en": "Software upgrade for low-cost GNSS receivers in robots and vehicles",
+            "ja": "ロボットや車の安価なGNSS受信機向けの、ソフトウェアによる精度向上"
+          },
+          "customer": {
+            "en": "Makers of delivery robots, drones, agricultural machines and fleet trackers that use cheap single receivers and cannot afford correction services everywhere.",
+            "ja": "配送ロボット、ドローン、農業機械、車両の追跡機器のメーカー。安価な受信機1台で動いていて、どこでも補正サービスを契約する余裕はない。"
+          },
+          "market": {
+            "en": "Positioning software for autonomy. Large and broad; the paying customer is the device maker.",
+            "ja": "自律移動のための測位ソフトウェア。大きく、裾野が広い。お金を払うのは機器のメーカー。"
+          },
+          "why_now": {
+            "en": "Autonomous machines are spreading into cities and forests where GNSS errors are largest, and training needs no expensive ground-truth surveys.",
+            "ja": "自律で動く機械が、測位の誤差が最も大きい都市部や森の中に広がっている。学習に高価な正解データの計測が要らない。"
+          },
+          "time_to_market": "1-3y",
+          "moat": {
+            "en": "Data collected across many environments and integration with receiver chipsets. Chip makers and correction-service providers are strong incumbents.",
+            "ja": "多くの環境で集めたデータと、受信機のチップとの統合。チップのメーカーや補正サービスの事業者という強い既存企業がいる。"
+          }
+        }
+      ],
+      "scores": {
+        "market_size": 4,
+        "feasibility": 4,
+        "startup_fit": 3
+      },
+      "confidence": "medium",
+      "caveats": {
+        "en": "Tested on an in-house dataset that is not yet released. The gain is largest on outliers; average accuracy and comparison with commercial correction services are not reported in the abstract.",
+        "ja": "まだ公開されていない自前のデータセットでの結果。改善が大きいのは大きく外れた値で、平均の精度や、商用の補正サービスとの比較は要旨に書かれていない。"
+      }
+    },
     {
       "arxiv_id": "2611.20765",
       "version": 1,
@@ -303,82 +638,6 @@
       }
     },
     {
-      "arxiv_id": "2611.20754",
-      "version": 1,
-      "title": "Directionality of low-energy electron recoils in the CYGNO experiment",
-      "authors": [
-        "F. D. Amaro",
-        "E. Baracchini",
-        "L. Benussi",
-        "C. Capoccia",
-        "M. Caponero",
-        "L. G. M. de Carvalho",
-        "G. Cavoto",
-        "I. A. Costa",
-        "M. D'Astolfo",
-        "G. D'Imperio",
-        "G. Dho",
-        "E. Di Marco",
-        "J. M. F. dos Santos",
-        "D. Fiorina",
-        "F. Iacoangeli",
-        "H. P. Lima",
-        "G. Maccarrone",
-        "P. Meloni",
-        "A. Messina",
-        "C. M. B. Monteiro",
-        "R. A. Nobrega",
-        "G. M. Oppedisano",
-        "I. F. Pains",
-        "E. Paoletti",
-        "F. Petrucci",
-        "S. Piacentini",
-        "D. Pierluigi",
-        "D. Pinci",
-        "A. Russo",
-        "G. Saviano",
-        "F. F. Scamporlino",
-        "R. C. Sousa",
-        "N. J. C. Spooner",
-        "R. Tesauro",
-        "S. Tomassini",
-        "S. Torelli"
-      ],
-      "primary_category": "physics.ins-det",
-      "categories": [
-        "physics.ins-det",
-        "astro-ph.IM",
-        "hep-ex"
-      ],
-      "published": "2026-11-16T09:02:26Z",
-      "abs_url": "https://arxiv.org/abs/2611.20754",
-      "pdf_url": "https://arxiv.org/pdf/2611.20754v1",
-      "fields": [
-        "space"
-      ],
-      "analyzed_at": "2026-11-17",
-      "analyzer": "Claude Code (title and abstract only)",
-      "technology": {
-        "en": "An algorithm that reconstructs the initial direction of low-energy electron tracks in the CYGNO gas detector, which is read out with a scientific camera.",
-        "ja": "科学用カメラで読み出すガス検出器CYGNOで、低エネルギーの電子の飛跡から最初の向きを復元するアルゴリズム。"
-      },
-      "breakthrough": {
-        "en": "In simulation, angular resolution improves from about 20 degrees near 20 keV to about 12 degrees at 60 keV for favourable track orientations, a step toward telling solar neutrinos from background.",
-        "ja": "シミュレーションでは、条件の良い向きの飛跡について、角度の分解能が20keV付近の約20度から60keVで約12度まで良くなった。太陽ニュートリノと背景を区別するための一歩。"
-      },
-      "business_seeds": [],
-      "scores": {
-        "market_size": 1,
-        "feasibility": 1,
-        "startup_fit": 1
-      },
-      "confidence": "high",
-      "caveats": {
-        "en": "Fundamental physics instrumentation, characterized by simulation. Camera-read gas detectors might find uses in radiation imaging, but the paper does not show that.",
-        "ja": "基礎物理のための測定器の研究で、評価はシミュレーションによる。カメラで読み出すガス検出器は放射線の画像化に使える可能性があるが、この論文では示されていない。"
-      }
-    },
-    {
       "arxiv_id": "2611.20752",
       "version": 1,
       "title": "Who Benefits from Telemonitoring? Uplift Modelling of a Nationwide Home Blood Pressure Monitoring Programme",
@@ -552,94 +811,6 @@
       }
     },
     {
-      "arxiv_id": "2611.20654",
-      "version": 1,
-      "title": "Magnetic Power in Binaries: From Coalescing Binary Neutron Stars to Close-in Exoplanetary Systems",
-      "authors": [
-        "Dong Lai",
-        "Tu Guo",
-        "Nicholas Corso"
-      ],
-      "primary_category": "astro-ph.HE",
-      "categories": [
-        "astro-ph.HE",
-        "astro-ph.EP",
-        "astro-ph.SR"
-      ],
-      "published": "2026-11-16T07:10:38Z",
-      "abs_url": "https://arxiv.org/abs/2611.20654",
-      "pdf_url": "https://arxiv.org/pdf/2611.20654v1",
-      "fields": [
-        "space"
-      ],
-      "analyzed_at": "2026-11-17",
-      "analyzer": "Claude Code (title and abstract only)",
-      "technology": {
-        "en": "A theoretical model that treats two magnetized bodies in orbit as an electric circuit powered by their orbital motion.",
-        "ja": "磁場を持つ2つの天体が互いを回る系を、軌道運動を動力とする電気回路とみなす理論モデル。"
-      },
-      "breakthrough": {
-        "en": "Gives formulas for the average and episodic magnetic power, predicting flares before neutron-star mergers and orbit-linked radio emission from exoplanet systems.",
-        "ja": "磁気的なエネルギーの平均値と、一時的に放出される量の式を示した。中性子星の合体前のフレアや、系外惑星系からの軌道に連動した電波放射を予測する。"
-      },
-      "business_seeds": [],
-      "scores": {
-        "market_size": 1,
-        "feasibility": 1,
-        "startup_fit": 1
-      },
-      "confidence": "high",
-      "caveats": {
-        "en": "Astrophysics theory. The value is scientific: it guides what telescopes should look for.",
-        "ja": "天体物理の理論。価値は科学的なもので、望遠鏡で何を探すべきかの指針になる。"
-      }
-    },
-    {
-      "arxiv_id": "2611.20636",
-      "version": 1,
-      "title": "Ca II IRT activity indices from $Gaia$ spectroscopy: a baseline method for photospheric contribution estimates",
-      "authors": [
-        "Wang Song",
-        "Li Tanda",
-        "Han Henggeng",
-        "Li Xue",
-        "Liu Jifeng"
-      ],
-      "primary_category": "astro-ph.SR",
-      "categories": [
-        "astro-ph.SR",
-        "astro-ph.GA",
-        "astro-ph.IM"
-      ],
-      "published": "2026-11-16T06:57:08Z",
-      "abs_url": "https://arxiv.org/abs/2611.20636",
-      "pdf_url": "https://arxiv.org/pdf/2611.20636v1",
-      "fields": [
-        "space"
-      ],
-      "analyzed_at": "2026-11-17",
-      "analyzer": "Claude Code (title and abstract only)",
-      "technology": {
-        "en": "A method to measure stellar magnetic activity from Gaia spectra by using quiet stars as the baseline instead of model templates.",
-        "ja": "Gaia衛星のスペクトルから、恒星の磁気活動を測る手法。モデルの型の代わりに、活動の少ない恒星を基準に使う。"
-      },
-      "breakthrough": {
-        "en": "Yields valid activity measurements for far more dwarf stars than the standard method and can scale to tens of millions of stars in the next Gaia data release.",
-        "ja": "標準の手法よりずっと多くの矮星で、有効な活動の測定値が得られる。次のGaiaのデータ公開で、数千万個の恒星に適用できる。"
-      },
-      "business_seeds": [],
-      "scores": {
-        "market_size": 1,
-        "feasibility": 1,
-        "startup_fit": 1
-      },
-      "confidence": "high",
-      "caveats": {
-        "en": "A data-analysis method for astronomy catalogues. No commercial customer.",
-        "ja": "天文カタログのためのデータ解析手法。商用の顧客はいない。"
-      }
-    },
-    {
       "arxiv_id": "2611.20622",
       "version": 1,
       "title": "Observable Spectral Framework for Noisy Amplitude Amplification: Stopping Stability and Correction",
@@ -682,75 +853,6 @@
       "caveats": {
         "en": "The demonstrated gain is small (success probability 0.595 to 0.626 on a 64-element search) and Grover search has no commercial use on today's hardware. At most a feature inside a quantum compiler.",
         "ja": "示された改善は小さい(64要素の探索で、成功確率が0.595から0.626)。グローバー探索は、今のハードウェアでは商用の使い道がない。せいぜい量子コンパイラの中の1機能。"
-      }
-    },
-    {
-      "arxiv_id": "2611.20617",
-      "version": 1,
-      "title": "Complex Interplay between Outer Disk Dynamics and Inner Water Reservoir",
-      "authors": [
-        "Feng Long",
-        "Ilaria Pascucci",
-        "Paola Pinilla",
-        "Andrea Banzatti",
-        "Adrien Houge",
-        "Sean M. Andrews",
-        "Doug Johnstone",
-        "Gregory J. Herczeg",
-        "Joan Najita",
-        "Klaus M. Pontoppidan",
-        "Joe Williams",
-        "Ke Zhang",
-        "Geoffrey A. Blake",
-        "Maria Jose Colmenares",
-        "Giovanni Rosotti",
-        "Enrico Ragusa",
-        "Colette Salyk",
-        "Chengyan Xie",
-        "Tayt Armitage",
-        "Xue-Ning Bai",
-        "Daniel Harsono",
-        "Till Kaeufer",
-        "Sebastiaan Krijt",
-        "Giuseppe Lodato",
-        "Yao Liu",
-        "Carlo F. Manara",
-        "Francois Menard",
-        "Mayank Narang",
-        "Miguel Vioque",
-        "David J. Wilner",
-        "the JDISCS Collaboration"
-      ],
-      "primary_category": "astro-ph.EP",
-      "categories": [
-        "astro-ph.EP"
-      ],
-      "published": "2026-11-16T06:40:17Z",
-      "abs_url": "https://arxiv.org/abs/2611.20617",
-      "pdf_url": "https://arxiv.org/pdf/2611.20617v1",
-      "fields": [
-        "space"
-      ],
-      "analyzed_at": "2026-11-17",
-      "analyzer": "Claude Code (title and abstract only)",
-      "technology": {
-        "en": "A combined ALMA and JWST survey of 51 planet-forming disks that relates outer-disk structure to water in the inner disk.",
-        "ja": "惑星ができつつある円盤51個を、ALMAとJWSTで合わせて調べた観測。円盤の外側の構造と、内側の水との関係を見ている。"
-      },
-      "breakthrough": {
-        "en": "Finds no single outer-disk property that predicts inner-disk water; three compact, featureless disks show signs of icy pebbles drifting inward unimpeded.",
-        "ja": "内側の水の量を単独で予測できる外側の性質は見つからなかった。小さくて構造のない3つの円盤では、氷の粒が妨げられずに内側へ流れ込んでいる兆候があった。"
-      },
-      "business_seeds": [],
-      "scores": {
-        "market_size": 1,
-        "feasibility": 1,
-        "startup_fit": 1
-      },
-      "confidence": "high",
-      "caveats": {
-        "en": "Observational astronomy about how planets form. No commercial application.",
-        "ja": "惑星の形成についての観測天文学。商用の応用はない。"
       }
     },
     {

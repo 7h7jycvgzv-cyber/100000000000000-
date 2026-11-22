@@ -102,7 +102,8 @@ def build_search_query(categories: tuple[str, ...] | list[str], keywords: tuple[
     for keyword in keywords:
         if '"' in keyword:
             raise ValueError(f"keyword must not contain a double quote: {keyword}")
-    terms = " OR ".join(f'abs:"{k}"' if " " in k else f"abs:{k}" for k in keywords)
+    # Quote anything that is not a single plain word: arXiv splits "on-orbit" unless it is quoted.
+    terms = " OR ".join(f"abs:{k}" if re.fullmatch(r"[A-Za-z0-9]+", k) else f'abs:"{k}"' for k in keywords)
     return f"({query}) AND ({terms})"
 
 
@@ -267,10 +268,17 @@ def parse_rss(xml_text: str | bytes) -> list[Paper]:
     return papers
 
 
+# With keywords, ask for more than needed: arXiv's search is looser than our keyword check.
+KEYWORD_OVERFETCH = 4
+
+
 def fetch_field_api(field_key: str, max_results: int = 10, get=http_get) -> list[Paper]:
     spec = FIELDS[field_key]
-    url = build_query_url(spec.categories, max_results, spec.keywords)
-    return parse_feed(get(url))
+    if not spec.keywords:
+        return parse_feed(get(build_query_url(spec.categories, max_results)))
+    wanted = min(max_results * KEYWORD_OVERFETCH, MAX_RESULTS_LIMIT)
+    papers = parse_feed(get(build_query_url(spec.categories, wanted, spec.keywords)))
+    return [p for p in papers if matches_keywords(p.summary, spec.keywords)][:max_results]
 
 
 def fetch_field_rss(field_key: str, max_results: int = 10, get=http_get) -> list[Paper]:
