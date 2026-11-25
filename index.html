@@ -23,6 +23,7 @@
     --space: #6243CF;
     --quantum: #0B8275;
     --ai: #B4580A;
+    --settlement: #B0306A;
     --track: #E3E7EE;
     --sans: "Instrument Sans", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
     --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -31,7 +32,7 @@
     :root {
       --bg: #0A0E18; --surface: #121929; --ink: #E6EAF2; --muted: #8D98AC; --line: #222B3F;
       --accent: #8F8DFF; --accent-ink: #0A0E18;
-      --space: #A994FF; --quantum: #4CCFBF; --ai: #F0A45A; --track: #1D2638;
+      --space: #A994FF; --quantum: #4CCFBF; --ai: #F0A45A; --settlement: #F27AB0; --track: #1D2638;
       color-scheme: dark;
     }
   }
@@ -236,7 +237,7 @@
 
   var I18N = {
     en: {
-      tagline: 'The latest arXiv papers in space, quantum computing and AI, read for the businesses they could become.',
+      tagline: 'The latest arXiv papers in space, space settlement, quantum computing and AI, read for the businesses they could become.',
       onlySeeds: 'Only papers with a seed',
       sort: 'Sort',
       sortTotal: 'Total score',
@@ -288,7 +289,7 @@
       log: 'Build log (Japanese)'
     },
     ja: {
-      tagline: '宇宙・量子計算・AIの最新のarXiv論文を、「どんな事業になりうるか」という目で読む。',
+      tagline: '宇宙・宇宙移住・量子計算・AIの最新のarXiv論文を、「どんな事業になりうるか」という目で読む。',
       onlySeeds: '事業の種がある論文だけ',
       sort: '並び順',
       sortTotal: '合計スコア',
@@ -345,7 +346,7 @@
   // Waitlist sign-up. Set WAITLIST_FORM_URL (for example a Google Form) to use it instead of a GitHub issue.
   var WAITLIST_FORM_URL = '';
   var WAITLIST_ISSUE_URL = 'https://github.com/7h7jycvgzv-cyber/100000000000000-/issues/new';
-  var FIELD_COLORS = { space: 'var(--space)', quantum: 'var(--quantum)', ai: 'var(--ai)' };
+  var FIELD_COLORS = { space: 'var(--space)', settlement: 'var(--settlement)', quantum: 'var(--quantum)', ai: 'var(--ai)' };
 
   var state = { lang: 'en', field: 'all', sort: 'total', onlySeeds: false, data: null, failed: false };
 

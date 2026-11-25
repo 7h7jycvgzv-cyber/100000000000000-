@@ -76,7 +76,7 @@ mock/                  看護記録の要約の見本
 ### 費用の目安
 
 - Claude API の利用料がかかる(Pro プランなどの契約とは別の、従量課金)
-- 1日最大15本。1本あたり入力は約2千トークン、出力は思考を含めて数千トークンなので、Claude Opus 5.5(入力 $4 / 出力 $20、100万トークンあたり)で **1日 1ドル前後、月 20〜25ドル前後** が目安(実際の値は Console の使用量で確認する)
+- 1日最大20本(4分野 × 5本)。1本あたり入力は約2千トークン、出力は思考を含めて数千トークンなので、Claude Opus 5.5(入力 $4 / 出力 $20、100万トークンあたり)で **1日 1.3ドル前後、月 25〜30ドル前後** が目安(実際の値は Console の使用量で確認する)
 - 費用を下げるなら、リポジトリ変数 `SEEDRADAR_MODEL` に `claude-sonnet-5-5` を入れる(分析の質は確認が必要)
 - Console で、月の利用上限を必ず設定する
 
@@ -113,8 +113,11 @@ python -m seedradar fetch --fields quantum ai --max 50
 | キー | 分野 | カテゴリ | キーワード |
 |---|---|---|---|
 | `space` | 宇宙開発 / Space Technology | `astro-ph.IM` `physics.space-ph` `eess.SP` `eess.SY` `eess.IV` `cs.RO` `cs.NI` `cs.CV` | 要旨に次のどれかを含む: spacecraft, cubesat, satellite constellation, earth observation, remote sensing, on-orbit, in-orbit, space debris, low earth orbit, inter-satellite, satellite communication, satellite imagery |
+| `settlement` | 宇宙移住 / Space Settlement | `astro-ph.EP` `astro-ph.IM` `physics.space-ph` `physics.med-ph` `physics.app-ph` `eess.SY` `cs.RO` `q-bio.TO` | 要旨に次のどれかを含む: space habitat, life support, in-situ resource utilization, lunar base, lunar surface, lunar regolith, mars habitat, space settlement, space radiation, astronaut, spaceflight, microgravity, space medicine, space exploration |
 | `quantum` | 量子計算 / Quantum Computing | `quant-ph` | なし |
-| `ai` | AI / Artificial Intelligence | `cs.AI` `cs.LG` `cs.CL` | なし |
+| `ai` | AI / Artificial Intelligence | `cs.AI` `cs.LG` `cs.CL` | なし。ただし題名か要旨に宇宙・量子の語(satellite, quantum など)を含む論文を先に並べる |
+
+`settlement`(宇宙移住)は、オーナーがいちばん惹かれている分野。宇宙の毎日の新着の中にはほとんど出てこないので、独立した分野にして、惑星科学や医学物理まで広く探す。
 
 `space` は、カテゴリだけで取ると基礎的な天文学に偏る。そのため、工学寄りのカテゴリ(信号処理、制御、画像、ロボット、通信、画像認識、観測機器)の中から、要旨に衛星・宇宙機のキーワードを含む論文を取る。
 検索式は `(cat:A OR cat:B ...) AND (abs:x OR abs:"y z" ...)`。条件は `seedradar/arxiv.py` の `FIELDS` で変える。
