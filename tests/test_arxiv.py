@@ -102,6 +102,35 @@ class BuildSearchQueryTest(unittest.TestCase):
         papers = arxiv.fetch_field("space", 1, get=lambda url: SPACE_FEED_TWO_HITS, source="api")
         self.assertEqual(len(papers), 1)
 
+    def test_settlement_field_keeps_only_settlement_papers(self):
+        feed = _feed(
+            _entry("2601.00030", "A cubesat radio for remote sensing."),
+            _entry("2601.00031", "Closed-loop life support for a lunar base."),
+        )
+        urls = []
+        papers = arxiv.fetch_field("settlement", 5, get=lambda url: urls.append(url) or feed, source="api")
+        self.assertEqual([p.arxiv_id for p in papers], ["2601.00031"])
+        self.assertIn("astro-ph.EP", urllib.parse.unquote(urls[0]))
+        self.assertIn('abs:"life support"', urllib.parse.unquote_plus(urls[0]))
+
+    def test_ai_papers_about_space_or_quantum_come_first(self):
+        feed = _feed(
+            _entry("2601.00040", "A better optimizer for language models in latent space."),
+            _entry("2601.00041", "Reinforcement learning for satellite scheduling."),
+            _entry("2601.00042", "A transformer that decodes quantum error syndromes."),
+        )
+        urls = []
+        papers = arxiv.fetch_field("ai", 2, get=lambda url: urls.append(url) or feed, source="api")
+        # "latent space" does not count as space; the other two are listed first.
+        self.assertEqual([p.arxiv_id for p in papers], ["2601.00041", "2601.00042"])
+        query = urllib.parse.parse_qs(urllib.parse.urlparse(urls[0]).query)
+        self.assertEqual(query["search_query"], ["cat:cs.AI OR cat:cs.LG OR cat:cs.CL"])
+        self.assertEqual(query["max_results"], [str(2 * arxiv.KEYWORD_OVERFETCH)])
+
+    def test_boost_does_not_drop_papers(self):
+        feed = _feed(_entry("2601.00050", "Nothing about space here."))
+        self.assertEqual(len(arxiv.fetch_field("ai", 5, get=lambda url: feed, source="api")), 1)
+
     def test_fields_without_keywords_are_not_filtered(self):
         papers = arxiv.fetch_field("quantum", 2, get=lambda url: FIXTURE, source="api")
         self.assertEqual(len(papers), 2)

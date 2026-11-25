@@ -245,7 +245,7 @@ def main(argv: list[str] | None = None) -> int:
 
     daily = sub.add_parser("daily", help="fetch, analyze new papers with the Claude API, and update seeds.json")
     daily.add_argument("--per-field", type=int, default=DEFAULT_PER_FIELD, help="papers per field to fetch")
-    daily.add_argument("--limit", type=int, default=15, help="at most this many papers are analyzed per run")
+    daily.add_argument("--limit", type=int, default=20, help="at most this many papers are analyzed per run")
     daily.add_argument("--source", choices=SOURCES, default="auto")
     daily.add_argument("--model", default=os.environ.get("SEEDRADAR_MODEL") or "claude-opus-5-5")
     daily.add_argument("--effort", default=os.environ.get("SEEDRADAR_EFFORT") or "medium",

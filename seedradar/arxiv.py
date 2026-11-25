@@ -37,7 +37,15 @@ class Field:
     categories: tuple[str, ...]
     # When set, a paper must also mention at least one of these in its abstract.
     keywords: tuple[str, ...] = ()
+    # Not required, but papers mentioning one of these (title or abstract) are listed first.
+    boost_keywords: tuple[str, ...] = ()
 
+
+SETTLEMENT_KEYWORDS = (
+    "space habitat", "life support", "in-situ resource utilization", "lunar base",
+    "lunar surface", "lunar regolith", "mars habitat", "space settlement", "space radiation",
+    "astronaut", "spaceflight", "microgravity", "space medicine", "space exploration",
+)
 
 FIELDS: dict[str, Field] = {
     f.key: f
@@ -58,8 +66,27 @@ FIELDS: dict[str, Field] = {
                 "inter-satellite", "satellite communication", "satellite imagery",
             ),
         ),
+        # Living and working in space is the owner's main interest. These papers are rare
+        # among the daily space news, so they get their own field and are searched more widely.
+        Field(
+            "settlement",
+            "Space Settlement",
+            "宇宙移住",
+            (
+                "astro-ph.EP", "astro-ph.IM", "physics.space-ph", "physics.med-ph",
+                "physics.app-ph", "eess.SY", "cs.RO", "q-bio.TO",
+            ),
+            SETTLEMENT_KEYWORDS,
+        ),
         Field("quantum", "Quantum Computing", "量子計算", ("quant-ph",)),
-        Field("ai", "Artificial Intelligence", "AI", ("cs.AI", "cs.LG", "cs.CL")),
+        # AI papers that touch space or quantum are listed first.
+        Field(
+            "ai", "Artificial Intelligence", "AI", ("cs.AI", "cs.LG", "cs.CL"),
+            boost_keywords=(
+                "spacecraft", "satellite", "astronaut", "lunar", "mars", "planetary",
+                "outer space", "orbit", "quantum",
+            ),
+        ),
     )
 }
 
@@ -272,21 +299,29 @@ def parse_rss(xml_text: str | bytes) -> list[Paper]:
 KEYWORD_OVERFETCH = 4
 
 
+def select_papers(papers: list[Paper], spec: Field, max_results: int) -> list[Paper]:
+    """Keep papers that meet the field's keywords, put boosted ones first, and cut to max_results."""
+    if spec.keywords:
+        papers = [p for p in papers if matches_keywords(p.summary, spec.keywords)]
+    if spec.boost_keywords:
+        # A stable sort keeps newest-first order inside each group.
+        papers = sorted(papers, key=lambda p: not matches_keywords(f"{p.title} {p.summary}", spec.boost_keywords))
+    return papers[:max_results]
+
+
 def fetch_field_api(field_key: str, max_results: int = 10, get=http_get) -> list[Paper]:
     spec = FIELDS[field_key]
-    if not spec.keywords:
+    if not spec.keywords and not spec.boost_keywords:
         return parse_feed(get(build_query_url(spec.categories, max_results)))
     wanted = min(max_results * KEYWORD_OVERFETCH, MAX_RESULTS_LIMIT)
     papers = parse_feed(get(build_query_url(spec.categories, wanted, spec.keywords)))
-    return [p for p in papers if matches_keywords(p.summary, spec.keywords)][:max_results]
+    return select_papers(papers, spec, max_results)
 
 
 def fetch_field_rss(field_key: str, max_results: int = 10, get=http_get) -> list[Paper]:
     """Today's announcements in the field's categories, filtered by the field's keywords."""
     spec = FIELDS[field_key]
-    papers = parse_rss(get(build_rss_url(spec.categories)))
-    matched = [p for p in papers if matches_keywords(p.summary, spec.keywords)]
-    return matched[:max_results]
+    return select_papers(parse_rss(get(build_rss_url(spec.categories))), spec, max_results)
 
 
 def fetch_field(field_key: str, max_results: int = 10, get=http_get, source: str = "auto") -> list[Paper]:
