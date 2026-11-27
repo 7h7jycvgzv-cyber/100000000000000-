@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>看護過程ナビ(見本)</title>
+<style>
+  :root {
+    --bg: #F3F5F4;
+    --surface: #FFFFFF;
+    --ink: #18262B;
+    --muted: #5B6A6E;
+    --line: #D6DDDC;
+    --accent: #0F6E78;
+    --accent-soft: #DCEEEF;
+    --warn: #96560A;
+    --warn-soft: #FBEFD6;
+    --red: #B3261E;
+    --red-soft: #FBE3E0;
+    --sans: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0E1618; --surface: #162124; --ink: #E4ECEC; --muted: #93A3A6; --line: #27363A;
+      --accent: #6FC7D0; --accent-soft: #16343A; --warn: #F0BC5E; --warn-soft: #3A2C10;
+      --red: #F2938B; --red-soft: #3B1916;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.7; padding: 16px 16px 56px; }
+  main { max-width: 680px; margin: 0 auto; display: grid; gap: 16px; }
+  h1 { font-size: 21px; margin: 0; line-height: 1.4; }
+  h2 { font-size: 17px; margin: 0; }
+  h3 { font-size: 14.5px; margin: 0 0 4px; }
+  p { margin: 0; }
+  ul, ol { margin: 0; padding-left: 1.3em; }
+  li + li { margin-top: 4px; }
+  .notice { background: var(--warn-soft); color: var(--warn); border-radius: 8px; padding: 10px 12px; font-size: 13px; font-weight: 700; display: grid; gap: 4px; }
+  .sub { color: var(--muted); font-size: 13px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 12px; }
+  .pick { display: grid; gap: 6px; }
+  .pick label { font-size: 13px; font-weight: 700; color: var(--muted); }
+  select { font: inherit; color: inherit; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; width: 100%; }
+  .steps { display: flex; gap: 6px; flex-wrap: wrap; }
+  .steps a { text-decoration: none; font-size: 13px; font-weight: 700; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 3px 12px; }
+  .step-head { display: flex; align-items: baseline; gap: 10px; }
+  .num { font-weight: 800; color: var(--accent); font-size: 13px; letter-spacing: .04em; }
+  details { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+  details[open] { padding-bottom: 12px; }
+  summary { cursor: pointer; font-weight: 700; }
+  summary:focus-visible, a:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .ask { margin-top: 8px; background: var(--accent-soft); border-radius: 8px; padding: 8px 10px; font-size: 14px; }
+  .ask b { color: var(--accent); }
+  .tree { display: grid; gap: 8px; }
+  .node { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+  .node .from { font-size: 12.5px; color: var(--muted); }
+  .node .to { font-weight: 700; }
+  .node.top { background: var(--accent-soft); border-color: var(--accent); text-align: center; font-weight: 700; }
+  .prio { counter-reset: p; list-style: none; padding: 0; display: grid; gap: 8px; }
+  .prio li { border-left: 4px solid var(--line); padding: 4px 0 4px 10px; margin: 0; }
+  .prio li.p1 { border-color: var(--red); }
+  .prio li.p2 { border-color: var(--warn); }
+  .prio li.p3 { border-color: var(--accent); }
+  .tag { display: inline-block; font-size: 11.5px; font-weight: 700; border-radius: 4px; padding: 0 6px; margin-right: 4px; }
+  .tag.r { background: var(--red-soft); color: var(--red); }
+  .tag.w { background: var(--warn-soft); color: var(--warn); }
+  .tag.a { background: var(--accent-soft); color: var(--accent); }
+  .plan { display: grid; gap: 10px; }
+  .plan h3 span { color: var(--muted); font-weight: 400; font-size: 12.5px; }
+  .feedback ol li { margin-top: 6px; }
+  footer { color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="notice">
+    <span>これは見本です。看護師による内容の確認前で、実際の実習にはまだ使えません。</span>
+    <span>このナビは、患者さんの情報を一切入力しません。記録の文章も作りません。出すのは「考える観点」と「問い」だけです。</span>
+  </div>
+
+  <header>
+    <h1 id="top">看護過程ナビ</h1>
+    <p class="sub">アセスメント → 関連図 → 優先度 → 看護計画を、迷わず順番に考えるための観点集</p>
+  </header>
+
+  <section class="card" aria-labelledby="pick-title">
+    <h2 id="pick-title">疾患と時期を選ぶ</h2>
+    <div class="pick">
+      <label for="case">見本では1つだけ選べます</label>
+      <select id="case">
+        <option>胃がん・幽門側胃切除術 / 術後1〜3日目</option>
+        <option disabled>大腸がん・結腸切除術(準備中)</option>
+        <option disabled>大腿骨頸部骨折・人工骨頭置換術(準備中)</option>
+        <option disabled>肺がん・肺葉切除術(準備中)</option>
+      </select>
+    </div>
+    <nav class="steps" aria-label="ステップ">
+      <a href="#s1">1 アセスメント</a><a href="#s2">2 関連図</a><a href="#s3">3 優先度</a><a href="#s4">4 看護計画</a>
+    </nav>
+  </section>
+
+  <section class="card" id="s1" aria-labelledby="s1-title">
+    <div class="step-head"><span class="num">STEP 1</span><h2 id="s1-title">アセスメントで見る観点</h2></div>
+    <p class="sub">術後早期は「合併症が起きていないか」「起きる前に防げているか」が中心。項目ごとに、何を見て、なぜ見るのかを確かめる。</p>
+
+    <details open>
+      <summary>呼吸</summary>
+      <ul>
+        <li>呼吸数、SpO2、呼吸音(左右差、副雑音)、痰の量と性状、咳ができるか</li>
+        <li>なぜ:全身麻酔と腹部の創の痛みで深呼吸や咳がしにくく、無気肺や肺炎が起きやすい</li>
+      </ul>
+      <p class="ask"><b>問い:</b>受け持ちの方の喫煙歴や呼吸器の既往は?痛みで呼吸が浅くなっていないか?</p>
+    </details>
+
+    <details>
+      <summary>循環・出血</summary>
+      <ul>
+        <li>血圧、脈拍、尿量、ドレーン排液の量と色の変化、創部の出血、血液データ(Hb)</li>
+        <li>なぜ:術後早期(特に24〜48時間)は後出血が起きうる。排液が急に血性に濃くなる、量が増える、頻脈や血圧低下は要注意</li>
+      </ul>
+      <p class="ask"><b>問い:</b>排液の色は時間とともにどう変わっている?尿量は保たれている?</p>
+    </details>
+
+    <details>
+      <summary>疼痛</summary>
+      <ul>
+        <li>痛みの強さ(NRSなど)、部位、鎮痛薬の種類と使った時間、表情、体動時の痛み</li>
+        <li>なぜ:痛みは呼吸、離床、睡眠のすべてに影響する</li>
+      </ul>
+      <p class="ask"><b>問い:</b>痛みのせいで、できていないこと(深呼吸、離床、睡眠)はある?</p>
+    </details>
+
+    <details>
+      <summary>創部・感染・縫合不全</summary>
+      <ul>
+        <li>創部の発赤・腫脹・熱感・滲出液、体温、ドレーン排液の混濁や性状の変化、血液データ(WBC、CRP)</li>
+        <li>なぜ:吻合部の縫合不全は術後数日たってから起きることがある。排液の性状の変化と発熱・腹痛は重要なサイン</li>
+      </ul>
+      <p class="ask"><b>問い:</b>今日は術後何日目?その日に起きやすい合併症は何?</p>
+    </details>
+
+    <details>
+      <summary>消化・腸の動き</summary>
+      <ul>
+        <li>腸蠕動音、排ガス・排便、腹部膨満、悪心・嘔吐</li>
+        <li>なぜ:手術で腸の動きが一時的に止まる。回復が遅れるとイレウスにつながる</li>
+      </ul>
+      <p class="ask"><b>問い:</b>排ガスはいつあった?離床と腸の動きの関係は?</p>
+    </details>
+
+    <details>
+      <summary>活動・離床・血栓</summary>
+      <ul>
+        <li>離床の進み具合、ふらつき、下肢の腫れや痛み、弾性ストッキングなどの予防の実施</li>
+        <li>なぜ:臥床が続くと深部静脈血栓症や筋力低下が起きやすい。初めての離床時の肺塞栓にも注意</li>
+      </ul>
+      <p class="ask"><b>問い:</b>離床を妨げているもの(痛み、ルート類、不安)は何?</p>
+    </details>
+
+    <details>
+      <summary>意識・精神</summary>
+      <ul>
+        <li>見当識、夜間の睡眠、落ち着きのなさ、ルート類を気にする様子</li>
+        <li>なぜ:高齢の方は術後せん妄が起きやすい。転倒やルートの自己抜去につながる</li>
+      </ul>
+      <p class="ask"><b>問い:</b>手術前と比べて、話し方や反応に変化はある?</p>
+    </details>
+
+    <details>
+      <summary>退院後の生活(食事)</summary>
+      <ul>
+        <li>食事が始まったあとの摂取量、食後の症状、体重、本人と家族の理解</li>
+        <li>なぜ:胃を切除すると、一度に食べられる量が減り、ダンピング症候群が起きることがある。退院後の食べ方が生活の中心の課題になる</li>
+      </ul>
+      <p class="ask"><b>問い:</b>家で食事を作るのは誰?本人は何を不安に思っている?</p>
+    </details>
+  </section>
+
+  <section class="card" id="s2" aria-labelledby="s2-title">
+    <div class="step-head"><span class="num">STEP 2</span><h2 id="s2-title">関連図の骨組み</h2></div>
+    <p class="sub">中心から「原因 → 起きること → 看護問題」の順につなぐ。受け持ちの方に当てはまる線だけ残し、当てはまらない線は消す。</p>
+    <div class="tree">
+      <div class="node top">胃がん → 幽門側胃切除術(全身麻酔・手術侵襲)</div>
+      <div class="node"><div class="from">全身麻酔・創の痛み → 深呼吸と咳がしにくい → 痰がたまる</div><div class="to">→ 無気肺・肺炎のリスク</div></div>
+      <div class="node"><div class="from">手術侵襲 → 止血が不十分</div><div class="to">→ 術後出血のリスク</div></div>
+      <div class="node"><div class="from">創・ドレーン・吻合部</div><div class="to">→ 感染・縫合不全のリスク</div></div>
+      <div class="node"><div class="from">腸管の操作・麻酔の影響 → 腸の動きが低下</div><div class="to">→ イレウスのリスク</div></div>
+      <div class="node"><div class="from">臥床・手術 → 血流が滞る</div><div class="to">→ 深部静脈血栓症のリスク</div></div>
+      <div class="node"><div class="from">創の痛み → 離床・睡眠の妨げ</div><div class="to">→ 急性疼痛</div></div>
+      <div class="node"><div class="from">高齢・環境の変化・痛み・睡眠不足</div><div class="to">→ 術後せん妄のリスク</div></div>
+      <div class="node"><div class="from">胃の切除 → 食べられる量の減少・ダンピング症候群</div><div class="to">→ 栄養状態の低下・退院後の生活への不安</div></div>
+    </div>
+    <p class="ask"><b>問い:</b>既往歴、年齢、生活背景で、受け持ちの方だけに追加すべき線はある?</p>
+  </section>
+
+  <section class="card" id="s3" aria-labelledby="s3-title">
+    <div class="step-head"><span class="num">STEP 3</span><h2 id="s3-title">優先度の考え方</h2></div>
+    <p class="sub">「命に関わる → 合併症を防ぐ → 苦痛をとる → 生活に戻る」の順で並べる。ただし、同じ問題でも、その日の状態で順位は変わる。</p>
+    <ol class="prio">
+      <li class="p1"><span class="tag r">命に関わる</span>呼吸(無気肺・肺炎)、出血。悪化すると短時間で生命に影響する</li>
+      <li class="p2"><span class="tag w">合併症を防ぐ</span>感染・縫合不全、イレウス、深部静脈血栓症、せん妄</li>
+      <li class="p2"><span class="tag w">苦痛</span>疼痛。ほかの問題(呼吸、離床)の原因にもなるので、上位に置く理由を説明できるようにする</li>
+      <li class="p3"><span class="tag a">生活に戻る</span>食事の摂り方、栄養、退院後の生活への不安</li>
+    </ol>
+    <p class="ask"><b>問い:</b>今日の受け持ちの方で、一番早く手を打たないと危ないのはどれ?その根拠になる観察結果は?</p>
+  </section>
+
+  <section class="card" id="s4" aria-labelledby="s4-title">
+    <div class="step-head"><span class="num">STEP 4</span><h2 id="s4-title">看護計画を考える観点</h2></div>
+    <p class="sub">例として「無気肺・肺炎のリスク」。ほかの看護問題も、同じ3つの枠で考える。</p>
+    <div class="plan">
+      <div>
+        <h3>観察(OP) <span>何を、いつ、どの頻度で見る?</span></h3>
+        <ul>
+          <li>呼吸数・SpO2・呼吸音・痰の性状を、どのタイミングで測るか</li>
+          <li>どんな変化があったら、すぐに報告するか(数値の目安を自分で調べて決める)</li>
+        </ul>
+      </div>
+      <div>
+        <h3>ケア(TP) <span>看護師として何をする?</span></h3>
+        <ul>
+          <li>深呼吸と咳を、痛みを抑えながら行える工夫(創部を押さえる、鎮痛薬を使うタイミング)</li>
+          <li>早期の離床と、体の向きを変えることの支援</li>
+        </ul>
+      </div>
+      <div>
+        <h3>指導(EP) <span>本人に何を伝え、何をできるようにする?</span></h3>
+        <ul>
+          <li>なぜ深呼吸と離床が大切なのかを、本人がわかる言葉で</li>
+          <li>痛いときに我慢せず伝えてよいこと</li>
+        </ul>
+      </div>
+    </div>
+    <p class="ask"><b>問い:</b>この計画は、受け持ちの方の年齢、理解の程度、痛みの強さに合っている?「誰が見ても同じ計画」になっていない?</p>
+  </section>
+
+  <section class="card feedback" aria-labelledby="fb-title">
+    <h2 id="fb-title">看護学生のみなさんへ:教えてください</h2>
+    <ol>
+      <li>これがあれば、記録にかかる時間は減りそうですか?どのステップが一番役に立ちそうですか?</li>
+      <li>実習1回(2週間)で500円なら、使いたいと思いますか?</li>
+      <li>ChatGPTに自分で聞くのと比べて、どうですか?</li>
+      <li>次に欲しい疾患は何ですか?</li>
+    </ol>
+  </section>
+
+  <footer>内容は一般的な観点の例です。実際の看護は、受け持ちの方の状態と、実習先・学校の指導に従ってください。</footer>
+</main>
+</body>
+</html>
